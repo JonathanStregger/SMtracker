@@ -28,6 +28,12 @@ namespace SMtracker
             InitializeComponent();
             CheckActive.Start();
             SetForDay();
+            StringBuilder sb = new StringBuilder();
+            /*Process[] procs = Process.GetProcesses();
+            for(int i = 0; i < procs.Length; i++)
+                if(!procs[i].ProcessName.Contains("host") && !procs[i].ProcessName.Contains("chrome") && !procs[i].ProcessName.Contains("Host"))
+                    sb.Append(procs[i].ProcessName + " : ");
+            MessageBox.Show(sb.ToString());*/
         }
 
         /// <summary>
@@ -63,7 +69,7 @@ namespace SMtracker
 
         private bool GamesRunning()
         {
-            string[] games = {"Wow", "Diablo III64", "Hearthstone", "SC2_x64" , "destiny2", "Steam", "Solitaire" };
+            string[] games = {"Wow", "Diablo III64", "Hearthstone", "SC2_x64" , "destiny2", "Steam", "Solitaire", "swtor" };
             for(int i = 0; i < games.Length; i++)
             {
                 Process[] pname = Process.GetProcessesByName(games[i]);
