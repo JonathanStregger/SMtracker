@@ -1,0 +1,10 @@
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES
+          WHERE TABLE_NAME = 'VGRecord')
+BEGIN
+CREATE TABLE VGRecord (
+    VGDate datetime PRIMARY KEY,
+	played time DEFAULT '00:00:00',
+	maxPlay time DEFAULT '01:00:00',
+	exercised time DEFAULT '00:00:00'
+);
+END;
