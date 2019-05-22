@@ -21,7 +21,7 @@ namespace SMtracker
         public static DataTable NewDay()
         {
             DataTable dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + DateTime.Today.ToString() + "'");
-            if(dt.Rows.Count == 0)
+            if(dt != null && dt.Rows.Count == 0)
             {
                 //Insert an entry for today into
                 NonQuery("INSERT INTO VGRecord (VGDate) VALUES ('" + DateTime.Today.ToString() + "')");

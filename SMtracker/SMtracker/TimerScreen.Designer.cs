@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimerScreen));
             this.TimerLabel = new System.Windows.Forms.Label();
             this.TimeActive = new System.Windows.Forms.Label();
             this.DataBtn = new System.Windows.Forms.Button();
@@ -187,9 +188,9 @@
             this.Controls.Add(this.TimeActive);
             this.Controls.Add(this.TimerLabel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "TimerScreen";
-            this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Self-Management Tracker";

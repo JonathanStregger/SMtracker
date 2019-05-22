@@ -19,6 +19,8 @@ namespace SMtracker
         private TimeSpan maxPlay;
         private DateTime dayEnd;
         private ViewData vd;
+        private DateTime treatmentStart;
+        private DateTime oneAM;
 
         /// <summary>
         /// Initialize the program: Start the check time and create a new entry for today if it
@@ -26,6 +28,10 @@ namespace SMtracker
         public TimerScreen()
         {
             InitializeComponent();
+
+            treatmentStart = new DateTime(2019, 5, 26); //May 26, 2019
+            oneAM = new DateTime(0, 0, 0, 1, 0, 0);
+
             CheckActive.Start();
             SetForDay();
             StringBuilder sb = new StringBuilder();
@@ -44,6 +50,12 @@ namespace SMtracker
             DateTime now = DateTime.Today;
             dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 0, 0); //11 pm
             DataTable todayData = SQLconn.NewDay();
+            if (todayData == null)
+            {
+                MessageBox.Show("Database Error", "Could not load database data for today.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
             played = (TimeSpan)todayData.Rows[0]["played"];
             maxPlay = (TimeSpan)todayData.Rows[0]["maxPlay"];
             MaxPlaylbl.Text = maxPlay.ToString();
@@ -89,18 +101,20 @@ namespace SMtracker
             //record played time if it is 
             if (DateTime.Now > dayEnd)
                 SQLconn.SetVGtime(played + VGActive.Elapsed);
-            else if (DateTime.Today.Day != dayEnd.Day)
+
+            else if (DateTime.Now.Hour == oneAM.Hour)
                 SetForDay();
+
             if (GamesRunning())
             {
                 VGActive.Start();
                 VGUpdate.Start();
-                if ((VGActive.Elapsed + played) >= maxPlay)
+                if ((VGActive.Elapsed + played) >= maxPlay && DateTime.Now > treatmentStart)
                 {
                     //activate after baseline data collected
-                    /*string dir = System.AppContext.BaseDirectory + "sound.wav";
+                    string dir = System.AppContext.BaseDirectory + "sound.wav";
                     System.Media.SoundPlayer alarm = new System.Media.SoundPlayer(dir);
-                    alarm.Play();*/
+                    alarm.Play();
                 }
             }
             else

@@ -25,6 +25,7 @@ namespace SMtracker
                 Hide();
             }
         }
+
         public void UpdateView()
         {
             if (!Visible)
@@ -34,20 +35,18 @@ namespace SMtracker
             {
                 BindingSource dbBind = new BindingSource { DataSource = dt };
                 DataView.DataSource = dbBind;
-                foreach(DataGridViewColumn col in DataView.Columns)
-                {
-                    if(col.Index == DataView.Columns.Count - 1)
-                    {
-                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                    }
-                    else
-                    {
-                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-                        int width = col.Width;
-                        col.AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                        col.Width = width;
-                    }
-                }
+
+                DataView.Columns[0].HeaderText = "Date";
+                DataView.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                DataView.Columns[1].HeaderText = "VG Played";
+                DataView.Columns[1].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                DataView.Columns[2].HeaderText = "Available Play";
+                DataView.Columns[2].AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+
+                DataView.Columns[3].HeaderText = "Time Exercised";
+                DataView.Columns[3].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             }
         }
 
