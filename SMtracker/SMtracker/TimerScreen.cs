@@ -14,32 +14,46 @@ namespace SMtracker
 {
     public partial class TimerScreen : Form
     {
-        private Stopwatch VGActive = new Stopwatch();
+        ///<param name="VGActive">Tracks the time that a video game has been open.</param>
+        private Stopwatch VGActive;
+        ///<param name="played">The amount of time played currently stored for the day on the database.</param>
         private TimeSpan played;
+        ///<param name="maxPlay">The maxPlay time currently stored for the day on the database.</param>
         private TimeSpan maxPlay;
+        ///<param name="dayEnd">The end of today to compare with for writing to the database at the end of the day.</param>
         private DateTime dayEnd;
+        ///<param name="vd">The ViewData screen instance to view data in.</param>
         private ViewData vd;
+        ///<param name="treatmentStart">The date to start the treatment phase.</param>
         private DateTime treatmentStart;
+        ///<param name="oneAM">For comparison for daily reset and creation of new database entry.</param>
         private DateTime oneAM;
 
         /// <summary>
-        /// Initialize the program: Start the check time and create a new entry for today if it
+        /// Initialize the program: Start the check time and create a new entry for today if one hasn't been created.
         /// </summary>
         public TimerScreen()
         {
             InitializeComponent();
 
             treatmentStart = new DateTime(2019, 5, 26); //May 26, 2019
-            oneAM = new DateTime(2019,5,22,1,0,0);
+            oneAM = new DateTime(2019,5,22,1,0,0); //1 AM
 
-            CheckActive.Start();
-            SetForDay();
+            CheckActive.Start(); //Start the activity checking timer
+            SetForDay(); //setup for the day
+        }
+
+        /// <summary>
+        /// Shows the current processes in a message box.
+        /// </summary>
+        private void GetProcesses()
+        {
             StringBuilder sb = new StringBuilder();
-            /*Process[] procs = Process.GetProcesses();
-            for(int i = 0; i < procs.Length; i++)
+            Process[] procs = Process.GetProcesses(); //get all current processes
+            for(int i = 0; i < procs.Length; i++) //add any process not host or chrome to list
                 if(!procs[i].ProcessName.Contains("host") && !procs[i].ProcessName.Contains("chrome") && !procs[i].ProcessName.Contains("Host"))
                     sb.Append(procs[i].ProcessName + " : ");
-            MessageBox.Show(sb.ToString());*/
+            MessageBox.Show(sb.ToString()); //show the processes minus chrome and host processes.
         }
 
         /// <summary>
@@ -47,20 +61,20 @@ namespace SMtracker
         /// </summary>
         private void SetForDay()
         {
-            DateTime now = DateTime.Today;
-            dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 0, 0); //11 pm
-            DataTable todayData = SQLconn.NewDay();
-            if (todayData == null)
+            DateTime now = DateTime.Today; //get today's datetime
+            dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 58, 0); //11:58 pm today
+            DataTable todayData = SQLconn.NewDay(); //create a new entry for today if not yet created and get the values for today
+            if (todayData == null) //make sure something was returned
             {
                 MessageBox.Show("Database Error", "Could not load database data for today.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
-
-            played = (TimeSpan)todayData.Rows[0]["played"];
-            maxPlay = (TimeSpan)todayData.Rows[0]["maxPlay"];
-            MaxPlaylbl.Text = maxPlay.ToString();
-            UpdateTime(null, null);
-            if (vd != null)
+            VGActive = new Stopwatch(); //create a new stopwatch for the daily session
+            played = (TimeSpan)todayData.Rows[0]["played"]; //retrieve the played time for the day
+            maxPlay = (TimeSpan)todayData.Rows[0]["maxPlay"]; //retrieve the maxPlay time for the day
+            MaxPlaylbl.Text = maxPlay.ToString(); //set the text of the max play label.
+            UpdateTime(null, null); //set the time active and time left labels
+            if (vd != null) //update the data view if it has been created
                 vd.UpdateView();
         }
 
@@ -79,8 +93,13 @@ namespace SMtracker
             }
         }
 
+        /// <summary>
+        /// Checks if any of the game processe in the list are in the current list of running processes.
+        /// </summary>
+        /// <returns>True if any of the processes are running, false if none are found.</returns>
         private bool GamesRunning()
         {
+            ///<param name="games">The list of process names to search for</param>
             string[] games = {"Wow", "Diablo III64", "Hearthstone", "SC2_x64" , "destiny2", "Steam", "Solitaire", "swtor" };
             for(int i = 0; i < games.Length; i++)
             {
@@ -94,14 +113,15 @@ namespace SMtracker
         /// <summary>
         /// Checks if any video games are running.  Starts active timer if any are active.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">CheckActive</param>
+        /// <param name="e">Tick</param>
         private void CheckRunning(object sender, EventArgs e)
         {
-            //record played time if it is 
+            //Record played time to database if it is the end of the day
             if (DateTime.Now > dayEnd)
                 SQLconn.SetVGtime(played + VGActive.Elapsed);
 
+            //
             else if (DateTime.Now.Hour == oneAM.Hour)
                 SetForDay();
 
