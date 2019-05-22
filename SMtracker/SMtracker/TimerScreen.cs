@@ -30,7 +30,7 @@ namespace SMtracker
             InitializeComponent();
 
             treatmentStart = new DateTime(2019, 5, 26); //May 26, 2019
-            oneAM = new DateTime(0, 0, 0, 1, 0, 0);
+            oneAM = new DateTime(2019,5,22,1,0,0);
 
             CheckActive.Start();
             SetForDay();
