@@ -35,7 +35,7 @@ namespace SMtracker
         public TimerScreen()
         {
             InitializeComponent();
-
+            
             treatmentStart = new DateTime(2019, 5, 26); //May 26, 2019
             oneAM = new DateTime(2019,5,22,1,0,0); //1 AM
 
@@ -120,23 +120,24 @@ namespace SMtracker
             //Record played time to database if it is the end of the day
             if (DateTime.Now > dayEnd)
                 SQLconn.SetVGtime(played + VGActive.Elapsed);
-
-            //
+            //Create a new entry for the new day at 1 AM if running
             else if (DateTime.Now.Hour == oneAM.Hour)
                 SetForDay();
 
+            //Check if games are running, if so then start the timers.
             if (GamesRunning())
             {
                 VGActive.Start();
                 VGUpdate.Start();
+                //If in treatment phase, when the played time exceeds the maxPlay time: SOUND THE ALARM!!!
                 if ((VGActive.Elapsed + played) >= maxPlay && DateTime.Now > treatmentStart)
                 {
-                    //activate after baseline data collected
                     string dir = System.AppContext.BaseDirectory + "sound.wav";
                     System.Media.SoundPlayer alarm = new System.Media.SoundPlayer(dir);
                     alarm.Play();
                 }
             }
+            //If games are not running, deactivate the timers
             else
             {
                 VGActive.Stop();
@@ -144,6 +145,11 @@ namespace SMtracker
             }
         }
 
+        /// <summary>
+        /// Update the time displays for played and play remaining each second.
+        /// </summary>
+        /// <param name="sender">VGUpdate</param>
+        /// <param name="e">Tick</param>
         private void UpdateTime(object sender, EventArgs e)
         {
             TimeSpan ts = played + VGActive.Elapsed;
@@ -153,22 +159,61 @@ namespace SMtracker
             TimeLeftLbl.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
         }
 
+        /// <summary>
+        /// Save the time played if the program is closing. However, if games are running, do not allow the program to close.
+        /// </summary>
+        /// <param name="sender">Application</param>
+        /// <param name="e">Closing</param>
         private void Save(object sender, FormClosingEventArgs e)
         {
-            SQLconn.SetVGtime(played + VGActive.Elapsed);
             if (GamesRunning())
-                e.Cancel = true;
+                e.Cancel = true; //cancel close
+            else
+                SQLconn.SetVGtime(played + VGActive.Elapsed);
         }
 
+        /// <summary>
+        /// Adds the time (in minutes) indicated in the spinner to the exercise time.
+        /// </summary>
+        /// <param name="sender">Exercise Add button</param>
+        /// <param name="e">Click</param>
         private void ExerciseBtn_Click(object sender, EventArgs e)
         {
-            SQLconn.AddExerciseTime(new TimeSpan(0, (int)ExerciseCounter.Value, 0));
-            SetForDay();
-            ExerciseCounter.Value = 0;
+            //Get the exercise type
+            string type;
+            if (walkRBtn.Checked)
+                type = "walk";
+            else if (yardworkRbtn.Checked)
+                type = "yardwork";
+            else if (bikeRBtn.Checked)
+                type = "bike";
+            else if (workoutRBtn.Checked)
+                type = "workout";
+            else
+            {
+                MessageBox.Show("No exercise type selected", "An exercise type must be selected.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+            if (SQLconn.AddExerciseTime(TimeSpan.FromMinutes((double)ExHours.Value*60+(double)ExMins.Value), type))
+            {
+                SetForDay(); //update displays
+                ExMins.Value = 0; //reset minutes counter to 0
+                ExHours.Value = 0; //reset hour counter to 0
+            }
+            else
+                MessageBox.Show("Exercise not added", "An error occured which prevented the exercise from being added.\nPlease check connection to the database",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
+        /// <summary>
+        /// Opens the View Data window.
+        /// </summary>
+        /// <param name="sender">View Data button</param>
+        /// <param name="e">Click</param>
         private void ViewData(object sender, EventArgs e)
         {
+            //if not created, create an instance of the View Data window
             if(vd == null)
             {
                 vd = new ViewData();

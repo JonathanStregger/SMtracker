@@ -13,6 +13,7 @@ namespace SMtracker
         // Connection string to the database
         private static readonly string ConnString = "Data Source = JON-PC; Initial Catalog = SMtracker; Integrated Security=SSPI";//User ID=Tracker;Password=PSYCSpring2019";
         private static SqlConnection Connection = new SqlConnection(ConnString);
+        private static string[] ExTypes = { "walk", "yardwork", "workout", "bike" };
 
         /// <summary>
         /// Creates a new entry in the database for today if not already started.
@@ -31,25 +32,28 @@ namespace SMtracker
         }
 
         /// <summary>
-        /// Adds exercise time onto the days total.  Updates the max play time as well.
+        /// Adds exercise time onto the days total, the type total and max play total.
         /// </summary>
         /// <param name="exercised"></param>
         /// <returns></returns>
-        public static bool AddExerciseTime(TimeSpan exercised)
+        public static bool AddExerciseTime(TimeSpan exercised, string type)
         {
-            if (exercised.Minutes < 1)
+            //Check that the exercise time is positive and that the type is available, else return false
+            if (exercised.Minutes < 1 || !ExTypes.Any(s => type.Contains(s)))
                 return false;
 
+            //Get today's data
             DataTable dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + DateTime.Today.ToString() + "'");
-            if (dt == null)
+            if (dt == null) //if nothing returned, return false.
                 return false;
 
+            //Get the new maxPlay and exerciseTotal
             TimeSpan maxPlay = exercised + (TimeSpan)dt.Rows[0]["maxPlay"];
-            exercised += (TimeSpan)dt.Rows[0]["exercised"];
+            TimeSpan exTotal = exercised + (TimeSpan)dt.Rows[0]["exerciseTotal"];
+            exercised += (TimeSpan)dt.Rows[0][type];
 
-            string cmd = string.Format("UPDATE VGRecord SET maxPlay = '{0}', exercised = '{1}' WHERE VGDate = '{2}'",
-                maxPlay.ToString(), exercised.ToString(), DateTime.Today.ToString());
-
+            string cmd = string.Format("UPDATE VGRecord SET maxPlay = '{0}', {1} = '{2}', exerciseTotal = '{3}' WHERE VGDate = '{4}'",
+                maxPlay.ToString(), type, exercised.ToString(), exTotal.ToString(), DateTime.Today.ToString());
             return NonQuery(cmd.ToString());
         }
 
