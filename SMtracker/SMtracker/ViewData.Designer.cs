@@ -58,17 +58,17 @@
             this.DataView.ReadOnly = true;
             this.DataView.RowHeadersVisible = false;
             this.DataView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.DataView.Size = new System.Drawing.Size(672, 257);
+            this.DataView.Size = new System.Drawing.Size(660, 257);
             this.DataView.TabIndex = 0;
             // 
             // ViewData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(696, 281);
+            this.ClientSize = new System.Drawing.Size(684, 281);
             this.Controls.Add(this.DataView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MinimumSize = new System.Drawing.Size(712, 320);
+            this.MinimumSize = new System.Drawing.Size(700, 320);
             this.Name = "ViewData";
             this.ShowInTaskbar = false;
             this.Text = "View Data";
