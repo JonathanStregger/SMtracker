@@ -232,5 +232,18 @@ namespace SMtracker
             }
             vd.Show();
         }
+
+        /// <summary>
+        /// Exit the program when Alt-F4 or exit button in the file menu is pressed.  Save before exiting if needed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Exit(object sender, EventArgs e)
+        {
+            if (!saved)
+                SQLconn.SetVGtime(played + VGActive.Elapsed);
+            if (!GamesRunning())
+                Application.Exit();
+        }
     }
 }

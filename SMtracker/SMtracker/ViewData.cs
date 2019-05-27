@@ -44,6 +44,8 @@ namespace SMtracker
             DataTable dt = SQLconn.GetDB();
             if(dt != null)
             {
+                DataView.Columns.Clear();
+                DataView.Refresh();
                 BindingSource dbBind = new BindingSource { DataSource = dt };
                 DataView.DataSource = dbBind;
 
@@ -68,7 +70,7 @@ namespace SMtracker
                 //Create a column for the day of the week
                 DataView.Columns.Add("DotW", "DotW");
                 DataView.Columns[8].DisplayIndex = 0;
-
+                
                 foreach (DataGridViewRow row in DataView.Rows)
                 {
                     //Get day of the week

@@ -32,8 +32,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TimerScreen));
             this.TimerLabel = new System.Windows.Forms.Label();
             this.TimeActive = new System.Windows.Forms.Label();
-            this.DataBtn = new System.Windows.Forms.Button();
-            this.ExitBtn = new System.Windows.Forms.Button();
             this.ExerciseBtn = new System.Windows.Forms.Button();
             this.CheckActive = new System.Windows.Forms.Timer(this.components);
             this.ExerciseTime = new System.Windows.Forms.Label();
@@ -50,14 +48,20 @@
             this.yardworkRbtn = new System.Windows.Forms.RadioButton();
             this.bikeRBtn = new System.Windows.Forms.RadioButton();
             this.workoutRBtn = new System.Windows.Forms.RadioButton();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.viewDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.ExMins)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExHours)).BeginInit();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // TimerLabel
             // 
             this.TimerLabel.AutoSize = true;
-            this.TimerLabel.Location = new System.Drawing.Point(13, 13);
+            this.TimerLabel.Location = new System.Drawing.Point(11, 31);
             this.TimerLabel.Name = "TimerLabel";
             this.TimerLabel.Size = new System.Drawing.Size(67, 13);
             this.TimerLabel.TabIndex = 0;
@@ -66,38 +70,16 @@
             // TimeActive
             // 
             this.TimeActive.AutoSize = true;
-            this.TimeActive.Location = new System.Drawing.Point(87, 13);
+            this.TimeActive.Location = new System.Drawing.Point(85, 31);
             this.TimeActive.Name = "TimeActive";
             this.TimeActive.Size = new System.Drawing.Size(49, 13);
             this.TimeActive.TabIndex = 1;
             this.TimeActive.Text = "00:00:00";
             // 
-            // DataBtn
-            // 
-            this.DataBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.DataBtn.Location = new System.Drawing.Point(12, 121);
-            this.DataBtn.Name = "DataBtn";
-            this.DataBtn.Size = new System.Drawing.Size(75, 23);
-            this.DataBtn.TabIndex = 7;
-            this.DataBtn.Text = "View Data";
-            this.DataBtn.UseVisualStyleBackColor = true;
-            this.DataBtn.Click += new System.EventHandler(this.ViewData);
-            // 
-            // ExitBtn
-            // 
-            this.ExitBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.ExitBtn.Location = new System.Drawing.Point(262, 121);
-            this.ExitBtn.Name = "ExitBtn";
-            this.ExitBtn.Size = new System.Drawing.Size(75, 23);
-            this.ExitBtn.TabIndex = 8;
-            this.ExitBtn.Text = "Exit";
-            this.ExitBtn.UseVisualStyleBackColor = true;
-            this.ExitBtn.Click += new System.EventHandler(this.ExitBtn_Click);
-            // 
             // ExerciseBtn
             // 
             this.ExerciseBtn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ExerciseBtn.Location = new System.Drawing.Point(262, 62);
+            this.ExerciseBtn.Location = new System.Drawing.Point(260, 80);
             this.ExerciseBtn.Name = "ExerciseBtn";
             this.ExerciseBtn.Size = new System.Drawing.Size(75, 23);
             this.ExerciseBtn.TabIndex = 6;
@@ -113,7 +95,7 @@
             // ExerciseTime
             // 
             this.ExerciseTime.AutoSize = true;
-            this.ExerciseTime.Location = new System.Drawing.Point(15, 67);
+            this.ExerciseTime.Location = new System.Drawing.Point(13, 85);
             this.ExerciseTime.Name = "ExerciseTime";
             this.ExerciseTime.Size = new System.Drawing.Size(72, 13);
             this.ExerciseTime.TabIndex = 5;
@@ -121,7 +103,7 @@
             // 
             // ExMins
             // 
-            this.ExMins.Location = new System.Drawing.Point(172, 65);
+            this.ExMins.Location = new System.Drawing.Point(170, 83);
             this.ExMins.Maximum = new decimal(new int[] {
             59,
             0,
@@ -134,7 +116,7 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(215, 67);
+            this.label1.Location = new System.Drawing.Point(213, 85);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(43, 13);
             this.label1.TabIndex = 7;
@@ -148,7 +130,7 @@
             // mpLbl
             // 
             this.mpLbl.AutoSize = true;
-            this.mpLbl.Location = new System.Drawing.Point(13, 40);
+            this.mpLbl.Location = new System.Drawing.Point(11, 58);
             this.mpLbl.Name = "mpLbl";
             this.mpLbl.Size = new System.Drawing.Size(52, 13);
             this.mpLbl.TabIndex = 8;
@@ -157,7 +139,7 @@
             // MaxPlaylbl
             // 
             this.MaxPlaylbl.AutoSize = true;
-            this.MaxPlaylbl.Location = new System.Drawing.Point(87, 40);
+            this.MaxPlaylbl.Location = new System.Drawing.Point(85, 58);
             this.MaxPlaylbl.Name = "MaxPlaylbl";
             this.MaxPlaylbl.Size = new System.Drawing.Size(49, 13);
             this.MaxPlaylbl.TabIndex = 9;
@@ -166,7 +148,7 @@
             // TimeLeftLbl
             // 
             this.TimeLeftLbl.AutoSize = true;
-            this.TimeLeftLbl.Location = new System.Drawing.Point(215, 13);
+            this.TimeLeftLbl.Location = new System.Drawing.Point(213, 31);
             this.TimeLeftLbl.Name = "TimeLeftLbl";
             this.TimeLeftLbl.Size = new System.Drawing.Size(49, 13);
             this.TimeLeftLbl.TabIndex = 10;
@@ -175,7 +157,7 @@
             // TLlbl
             // 
             this.TLlbl.AutoSize = true;
-            this.TLlbl.Location = new System.Drawing.Point(159, 13);
+            this.TLlbl.Location = new System.Drawing.Point(157, 31);
             this.TLlbl.Name = "TLlbl";
             this.TLlbl.Size = new System.Drawing.Size(50, 13);
             this.TLlbl.TabIndex = 11;
@@ -183,7 +165,7 @@
             // 
             // ExHours
             // 
-            this.ExHours.Location = new System.Drawing.Point(90, 65);
+            this.ExHours.Location = new System.Drawing.Point(88, 83);
             this.ExHours.Maximum = new decimal(new int[] {
             16,
             0,
@@ -196,7 +178,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(133, 67);
+            this.label2.Location = new System.Drawing.Point(131, 85);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(33, 13);
             this.label2.TabIndex = 13;
@@ -206,7 +188,7 @@
             // 
             this.walkRBtn.AutoSize = true;
             this.walkRBtn.Checked = true;
-            this.walkRBtn.Location = new System.Drawing.Point(49, 91);
+            this.walkRBtn.Location = new System.Drawing.Point(47, 109);
             this.walkRBtn.Name = "walkRBtn";
             this.walkRBtn.Size = new System.Drawing.Size(50, 17);
             this.walkRBtn.TabIndex = 2;
@@ -217,7 +199,7 @@
             // yardworkRbtn
             // 
             this.yardworkRbtn.AutoSize = true;
-            this.yardworkRbtn.Location = new System.Drawing.Point(106, 91);
+            this.yardworkRbtn.Location = new System.Drawing.Point(104, 109);
             this.yardworkRbtn.Name = "yardworkRbtn";
             this.yardworkRbtn.Size = new System.Drawing.Size(70, 17);
             this.yardworkRbtn.TabIndex = 3;
@@ -227,7 +209,7 @@
             // bikeRBtn
             // 
             this.bikeRBtn.AutoSize = true;
-            this.bikeRBtn.Location = new System.Drawing.Point(182, 91);
+            this.bikeRBtn.Location = new System.Drawing.Point(180, 109);
             this.bikeRBtn.Name = "bikeRBtn";
             this.bikeRBtn.Size = new System.Drawing.Size(46, 17);
             this.bikeRBtn.TabIndex = 4;
@@ -237,18 +219,59 @@
             // workoutRBtn
             // 
             this.workoutRBtn.AutoSize = true;
-            this.workoutRBtn.Location = new System.Drawing.Point(235, 91);
+            this.workoutRBtn.Location = new System.Drawing.Point(233, 109);
             this.workoutRBtn.Name = "workoutRBtn";
             this.workoutRBtn.Size = new System.Drawing.Size(66, 17);
             this.workoutRBtn.TabIndex = 5;
             this.workoutRBtn.Text = "Workout";
             this.workoutRBtn.UseVisualStyleBackColor = true;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(349, 24);
+            this.menuStrip1.TabIndex = 14;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fileToolStripMenuItem
+            // 
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.viewDataToolStripMenuItem,
+            this.exitToolStripMenuItem});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.exitToolStripMenuItem.ShowShortcutKeys = false;
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.Exit);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            // 
+            // viewDataToolStripMenuItem
+            // 
+            this.viewDataToolStripMenuItem.Name = "viewDataToolStripMenuItem";
+            this.viewDataToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+            this.viewDataToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.viewDataToolStripMenuItem.Text = "View Data";
+            this.viewDataToolStripMenuItem.Click += new System.EventHandler(this.ViewData);
+            // 
             // TimerScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(349, 156);
+            this.ClientSize = new System.Drawing.Size(349, 138);
             this.Controls.Add(this.workoutRBtn);
             this.Controls.Add(this.bikeRBtn);
             this.Controls.Add(this.yardworkRbtn);
@@ -262,13 +285,13 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.ExMins);
             this.Controls.Add(this.ExerciseTime);
-            this.Controls.Add(this.ExitBtn);
             this.Controls.Add(this.ExerciseBtn);
-            this.Controls.Add(this.DataBtn);
             this.Controls.Add(this.TimeActive);
             this.Controls.Add(this.TimerLabel);
+            this.Controls.Add(this.menuStrip1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.Name = "TimerScreen";
             this.ShowInTaskbar = false;
@@ -277,6 +300,8 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Save);
             ((System.ComponentModel.ISupportInitialize)(this.ExMins)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExHours)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -286,8 +311,6 @@
 
         private System.Windows.Forms.Label TimerLabel;
         private System.Windows.Forms.Label TimeActive;
-        private System.Windows.Forms.Button DataBtn;
-        private System.Windows.Forms.Button ExitBtn;
         private System.Windows.Forms.Button ExerciseBtn;
         private System.Windows.Forms.Timer CheckActive;
         private System.Windows.Forms.Label ExerciseTime;
@@ -304,6 +327,11 @@
         private System.Windows.Forms.RadioButton yardworkRbtn;
         private System.Windows.Forms.RadioButton bikeRBtn;
         private System.Windows.Forms.RadioButton workoutRBtn;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem viewDataToolStripMenuItem;
     }
 }
 
