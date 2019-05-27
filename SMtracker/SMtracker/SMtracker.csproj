@@ -64,6 +64,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="OptionWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OptionWindow.Designer.cs">
+      <DependentUpon>OptionWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="SQLconn.cs" />
     <Compile Include="TimerScreen.cs">
       <SubType>Form</SubType>
@@ -79,6 +85,9 @@
     <Compile Include="ViewData.Designer.cs">
       <DependentUpon>ViewData.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="OptionWindow.resx">
+      <DependentUpon>OptionWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TimerScreen.resx">
       <DependentUpon>TimerScreen.cs</DependentUpon>
     </EmbeddedResource>

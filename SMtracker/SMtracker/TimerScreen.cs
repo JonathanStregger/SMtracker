@@ -30,6 +30,7 @@ namespace SMtracker
         private DateTime oneAM;
         /// <param name="saved">Bit for tracking whether data has been saved to the database or not.</param>
         private bool saved = true;
+        private DataTable games;
 
         /// <summary>
         /// Initialize the program: Start the check time and create a new entry for today if one hasn't been created.
@@ -43,6 +44,7 @@ namespace SMtracker
 
             CheckActive.Start(); //Start the activity checking timer
             SetForDay(); //setup for the day
+            games = SQLconn.GetTracked();
         }
 
         /// <summary>
@@ -68,7 +70,7 @@ namespace SMtracker
                 SQLconn.SetVGtime(played + VGActive.Elapsed);
                 saved = true;
             }
-
+            
             DateTime now = DateTime.Today; //get today's datetime
             dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 58, 0); //11:58 pm today
             DataTable todayData = SQLconn.NewDay(); //create a new entry for today if not yet created and get the values for today
@@ -84,6 +86,8 @@ namespace SMtracker
             UpdateTime(null, null); //set the time active and time left labels
             if (vd != null) //update the data view if it has been created
                 vd.UpdateView();
+
+            saved = false;
         }
 
         /// <summary>
@@ -108,10 +112,12 @@ namespace SMtracker
         private bool GamesRunning()
         {
             ///<param name="games">The list of process names to search for</param>
-            string[] games = {"Wow", "Diablo III64", "Hearthstone", "SC2_x64" , "destiny2", "Steam", "Solitaire", "swtor" };
-            for(int i = 0; i < games.Length; i++)
+            //string[] games = {"Wow", "Diablo III64", "Hearthstone", "SC2_x64" , "destiny2", "Steam", "Solitaire", "swtor" };
+            
+
+            for(int i = 0; i < games.Rows.Count; i++)
             {
-                Process[] pname = Process.GetProcessesByName(games[i]);
+                Process[] pname = Process.GetProcessesByName(games.Rows[i][0].ToString());
                 if (pname.Length != 0)
                     return true;
             }
@@ -244,6 +250,18 @@ namespace SMtracker
                 SQLconn.SetVGtime(played + VGActive.Elapsed);
             if (!GamesRunning())
                 Application.Exit();
+        }
+
+        /// <summary>
+        /// Load options screen on shortcut F10 or click File>Options.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowOptions(object sender, EventArgs e)
+        {
+            OptionWindow ops = new OptionWindow();
+            ops.ShowDialog();
+            games = SQLconn.GetTracked();
         }
     }
 }

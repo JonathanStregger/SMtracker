@@ -64,13 +64,46 @@ namespace SMtracker
         /// <returns>True if successful, false if not successful.</returns>
         public static bool SetVGtime(TimeSpan played)
         {
-            return NonQuery(string.Format("UPDATE VGRecord SET played = '{0}' WHERE VGDate = '{1}'", played.ToString(),
-                DateTime.Today.ToString()));
+            DateTime today = DateTime.Today;
+            if (NonQuery(string.Format("UPDATE VGRecord SET played = '{0}' WHERE VGDate = '{1}'", played.ToString(),
+                today.ToString())))
+            {
+                DataTable rec = QueryDatabase(string.Format("SELECT played, exerciseTotal FROM VGRecord WHERE VGDate = '{0}'", 
+                    today.ToString()));
+                if(rec != null && rec.Rows.Count == 1)
+                {
+                    TimeSpan maxPlay;
+                    if((TimeSpan)rec.Rows[0]["exerciseTotal"] > (TimeSpan)rec.Rows[0]["played"])
+                        maxPlay = (TimeSpan)rec.Rows[0]["exerciseTotal"] - (TimeSpan)rec.Rows[0]["played"];
+                    else
+                        maxPlay = new TimeSpan(0);
+                    System.Windows.Forms.MessageBox.Show(maxPlay.ToString());
+                    return NonQuery(string.Format("UPDATE VGRecord SET maxPlay = '{0}' WHERE VGDate = '{1}'", maxPlay.ToString(), today.ToString()));
+                }
+                return false;
+            }
+            else
+                return false;
         }
 
         public static DataTable GetDB()
         {
             return QueryDatabase("SELECT * FROM VGRecord");
+        }
+
+        public static DataTable GetVGs()
+        {
+            return QueryDatabase("SELECT * FROM VGs");
+        }
+
+        public static bool AddTracker(string VGname, string procName)
+        {
+            return NonQuery(string.Format("INSERT INTO VGs (programName, processName) VALUES ('{0}', '{1}')", VGname, procName));
+        }
+
+        public static DataTable GetTracked()
+        {
+            return QueryDatabase("SELECT processName FROM VGs");
         }
 
         /// <summary>
@@ -99,10 +132,10 @@ namespace SMtracker
                 Connection.Close();
                 return false;
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
                 Connection.Close();
-                //System.Windows.Forms.MessageBox.Show(ex.ToString());
+                System.Windows.Forms.MessageBox.Show(ex.ToString());
                 return false;
             }
         }
