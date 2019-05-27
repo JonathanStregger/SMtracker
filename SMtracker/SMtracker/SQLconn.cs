@@ -39,7 +39,7 @@ namespace SMtracker
         public static bool AddExerciseTime(TimeSpan exercised, string type)
         {
             //Check that the exercise time is positive and that the type is available, else return false
-            if (exercised.Minutes < 1 || !ExTypes.Any(s => type.Contains(s)))
+            if (exercised.TotalMinutes < 1 || !ExTypes.Any(s => type.Contains(s)))
                 return false;
 
             //Get today's data
@@ -95,6 +95,7 @@ namespace SMtracker
                     Connection.Close();
                     return true;
                 }
+                
                 Connection.Close();
                 return false;
             }

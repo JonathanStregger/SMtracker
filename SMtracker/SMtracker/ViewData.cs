@@ -64,6 +64,13 @@ namespace SMtracker
                 DataView.Columns[7].HeaderText = "Yardwork";
                 DataView.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                 DataView.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
+                DataView.Columns.Add("DotW", "DotW");
+                DataView.Columns[8].DisplayIndex = 0;
+                foreach(DataGridViewRow row in DataView.Rows)
+                {
+                    DateTime day = (DateTime)row.Cells[0].Value;
+                    row.Cells[8].Value = day.DayOfWeek;
+                }
             }
             else
                 MessageBox.Show("Data not accessible", "An error occured which prevented the data from being retrieved.\nPlease check connection to the database",

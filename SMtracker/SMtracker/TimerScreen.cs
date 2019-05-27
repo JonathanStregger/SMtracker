@@ -28,6 +28,8 @@ namespace SMtracker
         private DateTime treatmentStart;
         ///<param name="oneAM">For comparison for daily reset and creation of new database entry.</param>
         private DateTime oneAM;
+        /// <param name="saved">Bit for tracking whether data has been saved to the database or not.</param>
+        private bool saved = true;
 
         /// <summary>
         /// Initialize the program: Start the check time and create a new entry for today if one hasn't been created.
@@ -61,6 +63,12 @@ namespace SMtracker
         /// </summary>
         private void SetForDay()
         {
+            if (!saved)
+            {
+                SQLconn.SetVGtime(played + VGActive.Elapsed);
+                saved = true;
+            }
+
             DateTime now = DateTime.Today; //get today's datetime
             dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 58, 0); //11:58 pm today
             DataTable todayData = SQLconn.NewDay(); //create a new entry for today if not yet created and get the values for today
@@ -118,10 +126,13 @@ namespace SMtracker
         private void CheckRunning(object sender, EventArgs e)
         {
             //Record played time to database if it is the end of the day
-            if (DateTime.Now > dayEnd)
+            if (!saved && DateTime.Now > dayEnd)
+            {
                 SQLconn.SetVGtime(played + VGActive.Elapsed);
+                saved = true;
+            }
             //Create a new entry for the new day at 1 AM if running
-            else if (DateTime.Now.Hour == oneAM.Hour)
+            if (DateTime.Now.Hour == oneAM.Hour)
                 SetForDay();
 
             //Check if games are running, if so then start the timers.
@@ -136,6 +147,7 @@ namespace SMtracker
                     System.Media.SoundPlayer alarm = new System.Media.SoundPlayer(dir);
                     alarm.Play();
                 }
+                saved = false;
             }
             //If games are not running, deactivate the timers
             else
@@ -168,7 +180,7 @@ namespace SMtracker
         {
             if (GamesRunning())
                 e.Cancel = true; //cancel close
-            else
+            else if(!saved)
                 SQLconn.SetVGtime(played + VGActive.Elapsed);
         }
 
@@ -202,8 +214,8 @@ namespace SMtracker
                 ExHours.Value = 0; //reset hour counter to 0
             }
             else
-                MessageBox.Show("Exercise not added", "An error occured which prevented the exercise from being added.\nPlease check connection to the database",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("An error occured which prevented the exercise from being added.\nPlease check connection to the database " + type, 
+                    "Exercise not added", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
         /// <summary>
