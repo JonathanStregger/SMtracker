@@ -77,7 +77,6 @@ namespace SMtracker
                         maxPlay = (TimeSpan)rec.Rows[0]["exerciseTotal"] - (TimeSpan)rec.Rows[0]["played"];
                     else
                         maxPlay = new TimeSpan(0);
-                    System.Windows.Forms.MessageBox.Show(maxPlay.ToString());
                     return NonQuery(string.Format("UPDATE VGRecord SET maxPlay = '{0}' WHERE VGDate = '{1}'", maxPlay.ToString(), today.ToString()));
                 }
                 return false;
@@ -132,10 +131,10 @@ namespace SMtracker
                 Connection.Close();
                 return false;
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
                 Connection.Close();
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
+                //System.Windows.Forms.MessageBox.Show(ex.ToString());
                 return false;
             }
         }
