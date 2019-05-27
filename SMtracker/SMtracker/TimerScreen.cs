@@ -30,7 +30,8 @@ namespace SMtracker
         private DateTime oneAM;
         /// <param name="saved">Bit for tracking whether data has been saved to the database or not.</param>
         private bool saved = true;
-        private DataTable games;
+        /// <param name="trackedProcesses">Holds the list of process names to check for in the active process list.</param>
+        private DataTable trackedProcesses;
 
         /// <summary>
         /// Initialize the program: Start the check time and create a new entry for today if one hasn't been created.
@@ -44,27 +45,16 @@ namespace SMtracker
 
             CheckActive.Start(); //Start the activity checking timer
             SetForDay(); //setup for the day
-            games = SQLconn.GetTracked();
+            trackedProcesses = SQLconn.GetTracked();
         }
 
-        /// <summary>
-        /// Shows the current processes in a message box.
-        /// </summary>
-        private void GetProcesses()
-        {
-            StringBuilder sb = new StringBuilder();
-            Process[] procs = Process.GetProcesses(); //get all current processes
-            for(int i = 0; i < procs.Length; i++) //add any process not host or chrome to list
-                if(!procs[i].ProcessName.Contains("host") && !procs[i].ProcessName.Contains("chrome") && !procs[i].ProcessName.Contains("Host"))
-                    sb.Append(procs[i].ProcessName + " : ");
-            MessageBox.Show(sb.ToString()); //show the processes minus chrome and host processes.
-        }
-
+        
         /// <summary>
         /// Set the day end time to record data if the program isn't turned off (it will save if shutoff)
         /// </summary>
         private void SetForDay()
         {
+            //Check if the data has been saved to the database, if not save it and flag saved.
             if (!saved)
             {
                 SQLconn.SetVGtime(played + VGActive.Elapsed);
@@ -86,23 +76,6 @@ namespace SMtracker
             UpdateTime(null, null); //set the time active and time left labels
             if (vd != null) //update the data view if it has been created
                 vd.UpdateView();
-
-            saved = false;
-        }
-
-        /// <summary>
-        /// Raises a dialog for exit when exit button is pressed. If the yes button is pressed, the application exits.
-        /// </summary>
-        /// <param name="sender">Exit button</param>
-        /// <param name="e">Click</param>
-        private void ExitBtn_Click(object sender, EventArgs e)
-        {
-            DialogResult result = MessageBox.Show("Exit SM Tracker?", "Are you sure you want to exit?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if(result == DialogResult.Yes)
-            {
-                SQLconn.SetVGtime(played + VGActive.Elapsed);
-                Application.Exit();
-            }
         }
 
         /// <summary>
@@ -111,24 +84,21 @@ namespace SMtracker
         /// <returns>True if any of the processes are running, false if none are found.</returns>
         private bool GamesRunning()
         {
-            ///<param name="games">The list of process names to search for</param>
-            //string[] games = {"Wow", "Diablo III64", "Hearthstone", "SC2_x64" , "destiny2", "Steam", "Solitaire", "swtor" };
-            
-
-            for(int i = 0; i < games.Rows.Count; i++)
+            //Check if each of the processes in the tracking list are currently running
+            for(int i = 0; i < trackedProcesses.Rows.Count; i++)
             {
-                Process[] pname = Process.GetProcessesByName(games.Rows[i][0].ToString());
-                if (pname.Length != 0)
+                Process[] runningProc = Process.GetProcessesByName(trackedProcesses.Rows[i][0].ToString());
+                if (runningProc.Length != 0)
                     return true;
             }
-            return false;
+            return false; //if no process was caught and returned, then none are currently running.
         }
 
         /// <summary>
         /// Checks if any video games are running.  Starts active timer if any are active.
         /// </summary>
         /// <param name="sender">CheckActive</param>
-        /// <param name="e">Tick</param>
+        /// <param name="e">10 second Tick</param>
         private void CheckRunning(object sender, EventArgs e)
         {
             //Record played time to database if it is the end of the day
@@ -141,11 +111,15 @@ namespace SMtracker
             if (DateTime.Now.Hour == oneAM.Hour)
                 SetForDay();
 
-            //Check if games are running, if so then start the timers.
+            //Check if games are running, start the timers any are.
             if (GamesRunning())
             {
-                VGActive.Start();
-                VGUpdate.Start();
+                if (!VGActive.IsRunning)
+                {
+                    VGActive.Start();
+                    VGUpdate.Start();
+                }
+
                 //If in treatment phase, when the played time exceeds the maxPlay time: SOUND THE ALARM!!!
                 if ((VGActive.Elapsed + played) >= maxPlay && DateTime.Now > treatmentStart)
                 {
@@ -156,7 +130,7 @@ namespace SMtracker
                 saved = false;
             }
             //If games are not running, deactivate the timers
-            else
+            else if(VGActive.IsRunning)
             {
                 VGActive.Stop();
                 VGUpdate.Stop();
@@ -167,12 +141,13 @@ namespace SMtracker
         /// Update the time displays for played and play remaining each second.
         /// </summary>
         /// <param name="sender">VGUpdate</param>
-        /// <param name="e">Tick</param>
+        /// <param name="e">1 second Tick</param>
         private void UpdateTime(object sender, EventArgs e)
         {
+            //Get the played and display it
             TimeSpan ts = played + VGActive.Elapsed;
             TimeActive.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
-
+            //Get the remaining play time and display it
             ts = maxPlay - ts;
             TimeLeftLbl.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
         }
@@ -195,9 +170,9 @@ namespace SMtracker
         /// </summary>
         /// <param name="sender">Exercise Add button</param>
         /// <param name="e">Click</param>
-        private void ExerciseBtn_Click(object sender, EventArgs e)
+        private void AddExercise(object sender, EventArgs e)
         {
-            //Get the exercise type
+            //Get the exercise type from the radio buttons
             string type;
             if (walkRBtn.Checked)
                 type = "walk";
@@ -213,6 +188,7 @@ namespace SMtracker
                 return;
             }
 
+            //Submit the exercise time to the database adding the entered hours and minutes together
             if (SQLconn.AddExerciseTime(TimeSpan.FromMinutes((double)ExHours.Value*60+(double)ExMins.Value), type))
             {
                 SetForDay(); //update displays
@@ -240,10 +216,10 @@ namespace SMtracker
         }
 
         /// <summary>
-        /// Exit the program when Alt-F4 or exit button in the file menu is pressed.  Save before exiting if needed.
+        /// Exit the program when Alt-F4 or exit button in the file menu is pressed.  Saves data before exiting if needed.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">File>Exit or Alt-F4</param>
+        /// <param name="e">Click or shortcut key Alt-F4</param>
         private void Exit(object sender, EventArgs e)
         {
             if (!saved)
@@ -255,13 +231,20 @@ namespace SMtracker
         /// <summary>
         /// Load options screen on shortcut F10 or click File>Options.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">File>Options or F10</param>
+        /// <param name="e">Click or shortcut key F10</param>
         private void ShowOptions(object sender, EventArgs e)
         {
-            OptionWindow ops = new OptionWindow();
+            OptionWindow ops = new OptionWindow(this);
             ops.ShowDialog();
-            games = SQLconn.GetTracked();
+        }
+
+        /// <summary>
+        /// Reset the tracked processes list.  
+        /// </summary>
+        public void SetTracked()
+        {
+            trackedProcesses = SQLconn.GetTracked();
         }
     }
 }

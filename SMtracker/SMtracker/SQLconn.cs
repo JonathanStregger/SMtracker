@@ -170,5 +170,27 @@ namespace SMtracker
                 return null;
             }
         }
+
+        /// <summary>
+        /// Remove the given process tracker entry from the VGs table.
+        /// </summary>
+        /// <param name="processName">The process to remove.</param>
+        /// <returns>True if the process was removed, false if it was not.</returns>
+        public static bool RemoveTracker(string processName)
+        {
+            return NonQuery("DELETE FROM VGs WHERE processName = '" + processName + "'");
+        }
+
+        /// <summary>
+        /// Updates the display name for the given process name.
+        /// </summary>
+        /// <param name="displayName">The new display name for the process</param>
+        /// <param name="processName">The process to update</param>
+        /// <returns></returns>
+        public static bool EditTracker(string displayName, string processName)
+        {
+            return NonQuery(string.Format("UPDATE VGs SET programName = '{0}' WHERE processName = '{1}'", 
+                displayName, processName));
+        }
     }
 }
