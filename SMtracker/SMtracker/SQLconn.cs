@@ -47,13 +47,13 @@ namespace SMtracker
             if (dt == null) //if nothing returned, return false.
                 return false;
 
-            //Get the new maxPlay and exerciseTotal
-            TimeSpan maxPlay = exercised + (TimeSpan)dt.Rows[0]["maxPlay"];
+            //Get the new availablePlay and exerciseTotal
+            TimeSpan availablePlay = exercised + (TimeSpan)dt.Rows[0]["availablePlay"];
             TimeSpan exTotal = exercised + (TimeSpan)dt.Rows[0]["exerciseTotal"];
             exercised += (TimeSpan)dt.Rows[0][type];
 
-            string cmd = string.Format("UPDATE VGRecord SET maxPlay = '{0}', {1} = '{2}', exerciseTotal = '{3}' WHERE VGDate = '{4}'",
-                maxPlay.ToString(), type, exercised.ToString(), exTotal.ToString(), DateTime.Today.ToString());
+            string cmd = string.Format("UPDATE VGRecord SET availablePlay = '{0}', {1} = '{2}', exerciseTotal = '{3}' WHERE VGDate = '{4}'",
+                availablePlay.ToString(), type, exercised.ToString(), exTotal.ToString(), DateTime.Today.ToString());
             return NonQuery(cmd.ToString());
         }
 
@@ -72,12 +72,12 @@ namespace SMtracker
                     today.ToString()));
                 if(rec != null && rec.Rows.Count == 1)
                 {
-                    TimeSpan maxPlay;
+                    TimeSpan availablePlay;
                     if((TimeSpan)rec.Rows[0]["exerciseTotal"] > (TimeSpan)rec.Rows[0]["played"])
-                        maxPlay = (TimeSpan)rec.Rows[0]["exerciseTotal"] - (TimeSpan)rec.Rows[0]["played"];
+                        availablePlay = (TimeSpan)rec.Rows[0]["exerciseTotal"] - (TimeSpan)rec.Rows[0]["played"];
                     else
-                        maxPlay = new TimeSpan(0);
-                    return NonQuery(string.Format("UPDATE VGRecord SET maxPlay = '{0}' WHERE VGDate = '{1}'", maxPlay.ToString(), today.ToString()));
+                        availablePlay = new TimeSpan(0);
+                    return NonQuery(string.Format("UPDATE VGRecord SET availablePlay = '{0}' WHERE VGDate = '{1}'", availablePlay.ToString(), today.ToString()));
                 }
                 return false;
             }

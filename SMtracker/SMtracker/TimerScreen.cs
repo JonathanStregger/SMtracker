@@ -18,8 +18,8 @@ namespace SMtracker
         private Stopwatch VGActive;
         ///<param name="played">The amount of time played currently stored for the day on the database.</param>
         private TimeSpan played;
-        ///<param name="maxPlay">The maxPlay time currently stored for the day on the database.</param>
-        private TimeSpan maxPlay;
+        ///<param name="exerciseTotal">The total time currently stored for the day on the database.</param>
+        private TimeSpan exerciseTotal;
         ///<param name="dayEnd">The end of today to compare with for writing to the database at the end of the day.</param>
         private DateTime dayEnd;
         ///<param name="vd">The ViewData screen instance to view data in.</param>
@@ -71,8 +71,8 @@ namespace SMtracker
             }
             VGActive = new Stopwatch(); //create a new stopwatch for the daily session
             played = (TimeSpan)todayData.Rows[0]["played"]; //retrieve the played time for the day
-            maxPlay = (TimeSpan)todayData.Rows[0]["maxPlay"]; //retrieve the maxPlay time for the day
-            MaxPlaylbl.Text = maxPlay.ToString(); //set the text of the max play label.
+            exerciseTotal = (TimeSpan)todayData.Rows[0]["exerciseTotal"]; //retrieve the exercise total time for the day
+            ExerciseTotalLbl.Text = exerciseTotal.ToString(); //set the text of the exercise total label.
             UpdateTime(null, null); //set the time active and time left labels
             if (vd != null) //update the data view if it has been created
                 vd.UpdateView();
@@ -120,8 +120,8 @@ namespace SMtracker
                     VGUpdate.Start();
                 }
 
-                //If in treatment phase, when the played time exceeds the maxPlay time: SOUND THE ALARM!!!
-                if ((VGActive.Elapsed + played) >= maxPlay && DateTime.Now > treatmentStart)
+                //If in treatment phase, when the played time exceeds the available play time: SOUND THE ALARM!!!
+                if ((VGActive.Elapsed + played) >= exerciseTotal && DateTime.Now > treatmentStart)
                 {
                     string dir = System.AppContext.BaseDirectory + "sound.wav";
                     System.Media.SoundPlayer alarm = new System.Media.SoundPlayer(dir);
@@ -148,7 +148,7 @@ namespace SMtracker
             TimeSpan ts = played + VGActive.Elapsed;
             TimeActive.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
             //Get the remaining play time and display it
-            ts = maxPlay - ts;
+            ts = exerciseTotal - ts;
             TimeLeftLbl.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
         }
 
