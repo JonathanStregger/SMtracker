@@ -41,7 +41,7 @@ namespace SMtracker
             if (!Visible)
                 return;
             //Get the data from the database and put it in the grid view
-            DataTable dt = SQLconn.GetDB();
+            DataTable dt = SQLconn.GetVGRecords();
             if(dt != null)
             {
                 DataView.Columns.Clear();

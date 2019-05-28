@@ -62,7 +62,7 @@ namespace SMtracker
         /// </summary>
         /// <param name="played">The time played</param>
         /// <returns>True if successful, false if not successful.</returns>
-        public static bool SetVGtime(TimeSpan played)
+        public static bool SaveVGtime(TimeSpan played)
         {
             DateTime today = DateTime.Today;
             if (NonQuery(string.Format("UPDATE VGRecord SET played = '{0}' WHERE VGDate = '{1}'", played.ToString(),
@@ -72,9 +72,10 @@ namespace SMtracker
                     today.ToString()));
                 if(rec != null && rec.Rows.Count == 1)
                 {
-                    TimeSpan availablePlay;
-                    if((TimeSpan)rec.Rows[0]["exerciseTotal"] > (TimeSpan)rec.Rows[0]["played"])
-                        availablePlay = (TimeSpan)rec.Rows[0]["exerciseTotal"] - (TimeSpan)rec.Rows[0]["played"];
+                    TimeSpan availablePlay = (TimeSpan)rec.Rows[0]["exerciseTotal"];
+                    availablePlay = availablePlay.Add(TimeSpan.FromHours(1));
+                    if(availablePlay > (TimeSpan)rec.Rows[0]["played"])
+                        availablePlay = availablePlay.Subtract((TimeSpan)rec.Rows[0]["played"]);
                     else
                         availablePlay = new TimeSpan(0);
                     return NonQuery(string.Format("UPDATE VGRecord SET availablePlay = '{0}' WHERE VGDate = '{1}'", availablePlay.ToString(), today.ToString()));
@@ -85,21 +86,39 @@ namespace SMtracker
                 return false;
         }
 
-        public static DataTable GetDB()
+        /// <summary>
+        /// Get the data from the VGRecords table for the time played, available, and exercise data.
+        /// </summary>
+        /// <returns>The VGRecords data</returns>
+        public static DataTable GetVGRecords()
         {
             return QueryDatabase("SELECT * FROM VGRecord");
         }
 
+        /// <summary>
+        /// Gets the data from teh VGs table for the processes to track.
+        /// </summary>
+        /// <returns>Tracked process data</returns>
         public static DataTable GetVGs()
         {
             return QueryDatabase("SELECT * FROM VGs");
         }
 
+        /// <summary>
+        /// Add a process to track.
+        /// </summary>
+        /// <param name="VGname">Display name for the process.</param>
+        /// <param name="procName">The process name</param>
+        /// <returns>True if the process was added to the tracked list, false if it was not.</returns>
         public static bool AddTracker(string VGname, string procName)
         {
             return NonQuery(string.Format("INSERT INTO VGs (programName, processName) VALUES ('{0}', '{1}')", VGname, procName));
         }
 
+        /// <summary>
+        /// Gets the data on the tracked processes.
+        /// </summary>
+        /// <returns>Data on the tracked processes</returns>
         public static DataTable GetTracked()
         {
             return QueryDatabase("SELECT processName FROM VGs");

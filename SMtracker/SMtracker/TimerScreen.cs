@@ -57,7 +57,7 @@ namespace SMtracker
             //Check if the data has been saved to the database, if not save it and flag saved.
             if (!saved)
             {
-                SQLconn.SetVGtime(played + VGActive.Elapsed);
+                SQLconn.SaveVGtime(played + VGActive.Elapsed);
                 saved = true;
             }
             
@@ -76,6 +76,7 @@ namespace SMtracker
             UpdateTime(null, null); //set the time active and time left labels
             if (vd != null) //update the data view if it has been created
                 vd.UpdateView();
+            saved = false;
         }
 
         /// <summary>
@@ -104,7 +105,7 @@ namespace SMtracker
             //Record played time to database if it is the end of the day
             if (!saved && DateTime.Now > dayEnd)
             {
-                SQLconn.SetVGtime(played + VGActive.Elapsed);
+                SQLconn.SaveVGtime(played + VGActive.Elapsed);
                 saved = true;
             }
             //Create a new entry for the new day at 1 AM if running
@@ -148,8 +149,10 @@ namespace SMtracker
             TimeSpan ts = played + VGActive.Elapsed;
             TimeActive.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
             //Get the remaining play time and display it
-            ts = exerciseTotal - ts;
+            ts = exerciseTotal.Add(TimeSpan.FromHours(1)) - ts;
             TimeLeftLbl.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
+            if (notifyIcon.Visible)
+                notifyIcon.Text = "Available: " + TimeLeftLbl.Text;
         }
 
         /// <summary>
@@ -162,7 +165,7 @@ namespace SMtracker
             if (GamesRunning())
                 e.Cancel = true; //cancel close
             else if(!saved)
-                SQLconn.SetVGtime(played + VGActive.Elapsed);
+                SQLconn.SaveVGtime(played + VGActive.Elapsed);
         }
 
         /// <summary>
@@ -223,7 +226,7 @@ namespace SMtracker
         private void Exit(object sender, EventArgs e)
         {
             if (!saved)
-                SQLconn.SetVGtime(played + VGActive.Elapsed);
+                SQLconn.SaveVGtime(played + VGActive.Elapsed);
             if (!GamesRunning())
                 Application.Exit();
         }
@@ -258,7 +261,7 @@ namespace SMtracker
             {
                 Hide();
                 notifyIcon.Visible = true;
-                notifyIcon.BalloonTipText = TimeLeftLbl.Text;
+                notifyIcon.Text = "Available: " + TimeLeftLbl.Text;
             }
         }
 
