@@ -135,11 +135,16 @@ namespace SMtracker
                 "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 if (SQLconn.RemoveTracker(process))
+                {
                     MessageBox.Show(process + " will no longer be tracked.", "Process tracker removed");
+                    host.SetTracked();
+                }
                 else
                     MessageBox.Show(process + " could not be untracked.  Please check connection to the database.",
                         "Process still tracked", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            UpdateTables();
+
         }
 
         /// <summary>
@@ -150,11 +155,12 @@ namespace SMtracker
         private void SubmitEdit(object sender, DataGridViewCellEventArgs e)
         {
             //only save for edits on display name column
-            if (e.ColumnIndex == 1)
+            if (e.ColumnIndex == 0)
                 return;
 
-            string newDisplay = (string)VG2Track.Rows[e.RowIndex].Cells[0].Value;
-            string processName = (string)VG2Track.Rows[e.RowIndex].Cells[1].Value;
+            string newDisplay = (string)VG2Track.Rows[e.RowIndex].Cells[1].Value;
+            string processName = (string)VG2Track.Rows[e.RowIndex].Cells[0].Value;
+            
             //check length of new display name for range
             if (newDisplay.Length > 0 && newDisplay.Length < 51)
             {
@@ -179,7 +185,7 @@ namespace SMtracker
         /// <param name="e">Enter edit cell</param>
         private void EditTracked(object sender, DataGridViewCellCancelEventArgs e)
         {
-            if (e.ColumnIndex == 1)
+            if (e.ColumnIndex == 0)
                 e.Cancel = true;
         }
     }

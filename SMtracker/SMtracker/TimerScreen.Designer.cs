@@ -54,6 +54,7 @@
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ExMins)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExHours)).BeginInit();
             this.menuStrip1.SuspendLayout();
@@ -137,11 +138,11 @@
             this.mpLbl.TabIndex = 8;
             this.mpLbl.Text = "Total Exercised:";
             // 
-            // MaxPlaylbl
+            // ExerciseTotalLbl
             // 
             this.ExerciseTotalLbl.AutoSize = true;
             this.ExerciseTotalLbl.Location = new System.Drawing.Point(100, 58);
-            this.ExerciseTotalLbl.Name = "MaxPlaylbl";
+            this.ExerciseTotalLbl.Name = "ExerciseTotalLbl";
             this.ExerciseTotalLbl.Size = new System.Drawing.Size(49, 13);
             this.ExerciseTotalLbl.TabIndex = 9;
             this.ExerciseTotalLbl.Text = "00:00:00";
@@ -279,6 +280,14 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
+            // notifyIcon
+            // 
+            this.notifyIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.notifyIcon.BalloonTipTitle = "Available Play";
+            this.notifyIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon.Icon")));
+            this.notifyIcon.Text = "SM Tracker";
+            this.notifyIcon.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.Unminimize);
+            // 
             // TimerScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -310,6 +319,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Self-Management Tracker";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Save);
+            this.Resize += new System.EventHandler(this.GotoNotify);
             ((System.ComponentModel.ISupportInitialize)(this.ExMins)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ExHours)).EndInit();
             this.menuStrip1.ResumeLayout(false);
@@ -345,6 +355,7 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem viewDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem optionsToolStripMenuItem;
+        private System.Windows.Forms.NotifyIcon notifyIcon;
     }
 }
 

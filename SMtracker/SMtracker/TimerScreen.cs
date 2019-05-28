@@ -246,5 +246,32 @@ namespace SMtracker
         {
             trackedProcesses = SQLconn.GetTracked();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void GotoNotify(object sender, EventArgs e)
+        {
+            if(WindowState == FormWindowState.Minimized)
+            {
+                Hide();
+                notifyIcon.Visible = true;
+                notifyIcon.BalloonTipText = TimeLeftLbl.Text;
+            }
+        }
+
+        /// <summary>
+        /// Put the window into normal state after the notify icon is double clicked.
+        /// </summary>
+        /// <param name="sender">notifyIcon</param>
+        /// <param name="e">Double-click</param>
+        private void Unminimize(object sender, MouseEventArgs e)
+        {
+            Show();
+            WindowState = FormWindowState.Normal;
+            notifyIcon.Visible = false;
+        }
     }
 }
