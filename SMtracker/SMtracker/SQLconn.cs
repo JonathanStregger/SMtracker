@@ -11,7 +11,7 @@ namespace SMtracker
     static class SQLconn
     {
         // Connection string to the database
-        private static readonly string ConnString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Xavil\\Source\\Repos\\JonathanStregger\\SMtracker\\SMtracker\\SMtracker\\SMData.mdf;Integrated Security=True";
+        private static readonly string ConnString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename="+ System.AppContext.BaseDirectory + "SMData.mdf;Integrated Security=True";
         private static SqlConnection Connection = new SqlConnection(ConnString);
         private static string[] ExTypes = { "walk", "yardwork", "workout", "bike" };
 
