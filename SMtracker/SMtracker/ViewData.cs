@@ -40,53 +40,22 @@ namespace SMtracker
             //Only update when visible
             if (!Visible)
                 return;
-            //Get the data from the database and put it in the grid view
-            DataTable dt = SQLconn.GetVGRecords();
-            if(dt != null)
-            {
-                DataView.Columns.Clear();
-                DataView.Refresh();
-                BindingSource dbBind = new BindingSource { DataSource = dt };
-                DataView.DataSource = dbBind;
 
-                //Set the column headers and size modes
-                DataView.Columns[0].HeaderText = "Date";
-                DataView.Columns[1].HeaderText = "VG Played";
-                DataView.Columns[2].HeaderText = "Available Play";
-                DataView.Columns[3].HeaderText = "Exercised";
-                DataView.Columns[4].HeaderText = "Walk";
-                DataView.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                DataView.Columns[4].Width = 70;
-                DataView.Columns[5].HeaderText = "Workout";
-                DataView.Columns[5].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                DataView.Columns[5].Width = 70;
-                DataView.Columns[6].HeaderText = "Bike";
-                DataView.Columns[6].AutoSizeMode = DataGridViewAutoSizeColumnMode.None;
-                DataView.Columns[6].Width = 70;
-                DataView.Columns[7].HeaderText = "Yardwork";
-                DataView.Columns[7].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-                DataView.Columns[7].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-                
-                //Create a column for the day of the week
-                DataView.Columns.Add("DotW", "DotW");
-                DataView.Columns[8].DisplayIndex = 0;
-                
-                foreach (DataGridViewRow row in DataView.Rows)
-                {
-                    //Get day of the week
-                    DateTime day = (DateTime)row.Cells[0].Value;
-                    row.Cells[8].Value = day.DayOfWeek;
-                
-                    //Truncate milliseconds in VG played and Available Play
-                    TimeSpan time = (TimeSpan)row.Cells[1].Value;
-                    row.Cells[1].Value = new TimeSpan(time.Hours, time.Minutes, time.Seconds);
-                    time = (TimeSpan)row.Cells[2].Value;
-                    row.Cells[2].Value = new TimeSpan(time.Hours, time.Minutes, time.Seconds);
-                }
+            DataView.DataSource = SQLconn.GetVGRecords();
+
+            foreach (DataGridViewRow row in DataView.Rows)
+            {
+                //Get day of the week
+                DateTime day = (DateTime)row.Cells[1].Value;
+                row.Cells[0].Value = day.DayOfWeek;
+
+                //Truncate milliseconds in VG played and Available Play
+                TimeSpan time = (TimeSpan)row.Cells[2].Value;
+                row.Cells[2].Value = new TimeSpan(time.Hours, time.Minutes, time.Seconds);
+                time = (TimeSpan)row.Cells[3].Value;
+                row.Cells[3].Value = new TimeSpan(time.Hours, time.Minutes, time.Seconds);
             }
-            else
-                MessageBox.Show("An error occured which prevented the data from being retrieved.\nPlease check connection to the database",
-                    "Data not accessible", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
         }
 
         /// <summary>
@@ -98,6 +67,22 @@ namespace SMtracker
         {
             if(Visible)
                 UpdateView();
+        }
+
+        private void ViewData_Load(object sender, EventArgs e)
+        {
+            UpdateView();
+        }
+
+        /// <summary>
+        /// Hides the window when escape is pressed
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CheckHide(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+                Hide();
         }
     }
 }

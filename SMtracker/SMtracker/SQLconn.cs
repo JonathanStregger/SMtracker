@@ -11,7 +11,7 @@ namespace SMtracker
     static class SQLconn
     {
         // Connection string to the database
-        private static readonly string ConnString = "Data Source = JON-PC; Initial Catalog = SMtracker; Integrated Security=SSPI";//User ID=Tracker;Password=PSYCSpring2019";
+        private static readonly string ConnString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\Xavil\\Source\\Repos\\JonathanStregger\\SMtracker\\SMtracker\\SMtracker\\SMData.mdf;Integrated Security=True";
         private static SqlConnection Connection = new SqlConnection(ConnString);
         private static string[] ExTypes = { "walk", "yardwork", "workout", "bike" };
 
@@ -150,10 +150,10 @@ namespace SMtracker
                 Connection.Close();
                 return false;
             }
-            catch //(Exception ex)
+            catch (Exception ex)
             {
                 Connection.Close();
-                //System.Windows.Forms.MessageBox.Show(ex.ToString());
+                System.Windows.Forms.MessageBox.Show(ex.ToString());
                 return false;
             }
         }
@@ -182,8 +182,9 @@ namespace SMtracker
                 Connection.Close();
                 return data;
             }
-            catch
+            catch (Exception ex)
             {
+                System.Windows.Forms.MessageBox.Show(ex.ToString());
                 //If no data returned, return null
                 Connection.Close();
                 return null;

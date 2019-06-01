@@ -15,6 +15,7 @@ namespace SMtracker
     {
         /// <param name="host">The host timer screen which called this form.</param>"
         private TimerScreen host;
+
         public OptionWindow(TimerScreen ts)
         {
             InitializeComponent();
@@ -26,19 +27,11 @@ namespace SMtracker
         /// </summary>
         private void UpdateTables()
         {
-            //Get all the tracked processes from the database
-            DataTable VGs = SQLconn.GetVGs();
-            if (VGs != null)
-            {
-                BindingSource VGsBind = new BindingSource { DataSource = VGs };
-                VG2Track.DataSource = VGsBind; //set the data for the display
-                //Set the column header text, switch the order of the two columns and set the process column to fill
-                VG2Track.Columns[1].HeaderText = "Name";
-                VG2Track.Columns[1].DisplayIndex = 0;
-                VG2Track.Columns[0].HeaderText = "Process";
-                VG2Track.Columns[0].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            }
+            //update tracked view
+            VG2Track.DataSource = SQLconn.GetVGs();
 
+
+            //Get all the tracked processes from the database
             Process[] procs = Process.GetProcesses(); //get all current processes
             DataTable dtProcs = new DataTable();
             dtProcs.Columns.Add("Running Processes");
@@ -81,6 +74,7 @@ namespace SMtracker
             //If there is a process selected, add it to the database with the given display name.
             if (Processes.SelectedRows.Count == 1)
             {
+                
                 //Attempt to add the process to be tracked.
                 if (SQLconn.AddTracker(VGName.Text, (string)Processes.SelectedRows[0].Cells[0].Value))
                 {
@@ -103,7 +97,7 @@ namespace SMtracker
         /// </summary>
         /// <param name="sender">SearchBar</param>
         /// <param name="e">TextChanged</param>
-        private void Serach(object sender, EventArgs e)
+        private void Search(object sender, EventArgs e)
         {
             //Disable the currency manager while visibility of rows is being altered.
             CurrencyManager man = (CurrencyManager)BindingContext[Processes.DataSource];
@@ -130,7 +124,7 @@ namespace SMtracker
             if (VG2Track.SelectedRows.Count != 1)
                 return;
 
-            string process = (string)VG2Track.SelectedRows[0].Cells[0].Value; //get the process that is selected
+            string process = (string)VG2Track.SelectedRows[0].Cells[1].Value; //get the process that is selected
             if(MessageBox.Show(string.Format("Delete tracker for {0}?", (string)VG2Track.SelectedRows[0].Cells[1].Value),
                 "Are you sure?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
@@ -143,8 +137,8 @@ namespace SMtracker
                     MessageBox.Show(process + " could not be untracked.  Please check connection to the database.",
                         "Process still tracked", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            UpdateTables();
 
+            UpdateTables();
         }
 
         /// <summary>
@@ -175,6 +169,7 @@ namespace SMtracker
             else
                 MessageBox.Show("Invalid display name detected.", "Invalid Text Entered", MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+
             UpdateTables(); //update tables to either show changes or revert depending on entry validity.
         }
 
@@ -187,6 +182,45 @@ namespace SMtracker
         {
             if (e.ColumnIndex == 0)
                 e.Cancel = true;
+        }
+
+        /// <summary>
+        /// Hides the form instead of disposing when the red X is clicked.
+        /// </summary>
+        /// <param name="sender">Red X button</param>
+        /// <param name="e">Form Closing</param>
+        private void HideInstead(object sender, FormClosingEventArgs e)
+        {
+            //Only cancel the close if the View Data window is focused.  Otherwise, this window should close.
+            if (ContainsFocus)
+            {
+                e.Cancel = true;
+                Hide();
+            }
+        }
+
+        /// <summary>
+        /// Updates the process list.
+        /// </summary>
+        /// <param name="sender">Refresh button</param>
+        /// <param name="e">Click</param>
+        private void RefreshBtn_Click(object sender, EventArgs e)
+        {
+            UpdateTables();
+        }
+
+        /// <summary>
+        /// Hides the window if escape is pressed.
+        /// </summary>
+        /// <param name="sender">OptionWindow</param>
+        /// <param name="e">Key Down</param>
+        private void CheckHide(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                e.SuppressKeyPress = true;
+                Hide();
+            }
         }
     }
 }

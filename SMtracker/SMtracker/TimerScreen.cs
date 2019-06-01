@@ -24,6 +24,8 @@ namespace SMtracker
         private DateTime dayEnd;
         ///<param name="vd">The ViewData screen instance to view data in.</param>
         private ViewData vd;
+        /// <param name="ops">The Options screen instance for chaning program options.</param>
+        private OptionWindow ops;
         ///<param name="treatmentStart">The date to start the treatment phase.</param>
         private DateTime treatmentStart;
         ///<param name="oneAM">For comparison for daily reset and creation of new database entry.</param>
@@ -40,7 +42,7 @@ namespace SMtracker
         {
             InitializeComponent();
             
-            treatmentStart = new DateTime(2019, 5, 26); //May 26, 2019
+            treatmentStart = new DateTime(2019, 5, 29); //May 29, 2019
             oneAM = new DateTime(2019,5,22,1,0,0); //1 AM
 
             CheckActive.Start(); //Start the activity checking timer
@@ -122,7 +124,7 @@ namespace SMtracker
                 }
 
                 //If in treatment phase, when the played time exceeds the available play time: SOUND THE ALARM!!!
-                if ((VGActive.Elapsed + played) >= exerciseTotal && DateTime.Now > treatmentStart)
+                if ((VGActive.Elapsed + played) >= exerciseTotal.Add(TimeSpan.FromHours(1)) && DateTime.Now > treatmentStart)
                 {
                     string dir = System.AppContext.BaseDirectory + "sound.wav";
                     System.Media.SoundPlayer alarm = new System.Media.SoundPlayer(dir);
@@ -145,7 +147,7 @@ namespace SMtracker
         /// <param name="e">1 second Tick</param>
         private void UpdateTime(object sender, EventArgs e)
         {
-            //Get the played and display it
+            //Get time played and display it
             TimeSpan ts = played + VGActive.Elapsed;
             TimeActive.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
             //Get the remaining play time and display it
@@ -214,6 +216,32 @@ namespace SMtracker
             if(vd == null)
             {
                 vd = new ViewData();
+                //Create start position off to the side of the tracker, but not off the screen.
+                int x = Location.X - 675;
+                int y = Location.Y - 72;
+                if (x < 0)
+                    x = 0;
+                if (y < 0)
+                    y = 0;
+                Screen[] screens = Screen.AllScreens;
+                Rectangle bounds;
+                if (screens[0] == Screen.FromControl(this))
+                {
+                    bounds = screens[0].WorkingArea;
+                    if ((x + 650) > bounds.Width)
+                        x = bounds.Width - 650;
+                }
+                else
+                {
+                    bounds = screens[1].WorkingArea;
+                    int width = screens[0].WorkingArea.Width + bounds.Width;
+                    if ((x + 650) > width)
+                        x = width - 650;
+                }
+                if (y + 320 > bounds.Height)
+                    y = bounds.Height - 320;
+                    
+                vd.Location = new Point(x, y);
             }
             vd.Show();
         }
@@ -238,8 +266,35 @@ namespace SMtracker
         /// <param name="e">Click or shortcut key F10</param>
         private void ShowOptions(object sender, EventArgs e)
         {
-            OptionWindow ops = new OptionWindow(this);
-            ops.ShowDialog();
+            if (ops == null)
+            {
+                ops = new OptionWindow(this);
+                int x = Location.X + 390;
+                int y = Location.Y - 72;
+                if (x < 0)
+                    x = 0;
+                if (y < 0)
+                    y = 0;
+                Screen[] screens = Screen.AllScreens;
+                Rectangle bounds;
+                if (screens[0] == Screen.FromControl(this))
+                {
+                    bounds = screens[0].WorkingArea;
+                    if ((x + 645) > bounds.Width)
+                        x = bounds.Width - 645;
+                }
+                else
+                {
+                    bounds = screens[1].WorkingArea;
+                    int width = screens[0].WorkingArea.Width + bounds.Width;
+                    if ((x + 645) > width)
+                        x = width - 645;
+                }
+                if (y + 489 > bounds.Height)
+                    y = bounds.Height - 489;
+                ops.Location = new Point(x, y);
+            }
+            ops.Show();
         }
 
         /// <summary>
