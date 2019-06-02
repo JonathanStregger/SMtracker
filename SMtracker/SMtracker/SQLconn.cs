@@ -11,22 +11,25 @@ namespace SMtracker
     static class SQLconn
     {
         // Connection string to the database
-        private static readonly string ConnString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename="+ System.AppContext.BaseDirectory + "SMData.mdf;Integrated Security=True";
+        private static readonly string ConnString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" +
+            System.AppContext.BaseDirectory + "SMData.mdf;Integrated Security=True";
         private static SqlConnection Connection = new SqlConnection(ConnString);
         private static string[] ExTypes = { "walk", "yardwork", "workout", "bike" };
 
         /// <summary>
         /// Creates a new entry in the database for today if not already started.
         /// </summary>
+        /// <param name="day">The day to get the data for</param>
         /// <returns>The current value of played.</returns>
-        public static DataTable NewDay()
+        public static DataTable RecordByDate(DateTime day)
         {
-            DataTable dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + DateTime.Today.ToString() + "'");
-            if(dt != null && dt.Rows.Count == 0)
+            string dayDate = day.Date.ToShortDateString();
+            DataTable dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + dayDate + "'");
+            if(dt != null && dt.Rows.Count == 0 && day.Date <= DateTime.Now.Date)
             {
                 //Insert an entry for today into
-                NonQuery("INSERT INTO VGRecord (VGDate) VALUES ('" + DateTime.Today.ToString() + "')");
-                dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + DateTime.Today.ToString() + "'");
+                NonQuery("INSERT INTO VGRecord (VGDate) VALUES ('" + dayDate + "')");
+                dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + dayDate + "'");
             }
             return dt;
         }
@@ -61,10 +64,13 @@ namespace SMtracker
         /// Set the VGTime for today.
         /// </summary>
         /// <param name="played">The time played</param>
+        /// <param name="available">The time left to play</param>
         /// <returns>True if successful, false if not successful.</returns>
-        public static bool SaveVGtime(TimeSpan played)
+        public static bool SaveVGtime(TimeSpan played, TimeSpan available)
         {
-            DateTime today = DateTime.Today;
+            return NonQuery(string.Format("UPDATE VGRecord SET played = '{0}', availablePlay = '{1}' WHERE VGDate = '{2}'",
+                played.ToString(), available.ToString(), DateTime.Today.ToString()));
+            /*DateTime today = DateTime.Today;
             if (NonQuery(string.Format("UPDATE VGRecord SET played = '{0}' WHERE VGDate = '{1}'", played.ToString(),
                 today.ToString())))
             {
@@ -78,12 +84,13 @@ namespace SMtracker
                         availablePlay = availablePlay.Subtract((TimeSpan)rec.Rows[0]["played"]);
                     else
                         availablePlay = new TimeSpan(0);
-                    return NonQuery(string.Format("UPDATE VGRecord SET availablePlay = '{0}' WHERE VGDate = '{1}'", availablePlay.ToString(), today.ToString()));
+                    return NonQuery(string.Format("UPDATE VGRecord SET availablePlay = '{0}' WHERE VGDate = '{1}'",
+                        availablePlay.ToString(), today.ToString()));
                 }
                 return false;
             }
             else
-                return false;
+                return false;*/
         }
 
         /// <summary>

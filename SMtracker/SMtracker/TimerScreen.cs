@@ -34,6 +34,8 @@ namespace SMtracker
         private bool saved = true;
         /// <param name="trackedProcesses">Holds the list of process names to check for in the active process list.</param>
         private DataTable trackedProcesses;
+        /// <param name="availableStart">The initial available play at the start of the day: 1 hour plus leftover from previous day.</param>
+        private TimeSpan availableStart;
 
         /// <summary>
         /// Initialize the program: Start the check time and create a new entry for today if one hasn't been created.
@@ -46,29 +48,47 @@ namespace SMtracker
             oneAM = new DateTime(2019,5,22,1,0,0); //1 AM
 
             CheckActive.Start(); //Start the activity checking timer
-            SetForDay(); //setup for the day
+            NewDay(); //setup for the day
             trackedProcesses = SQLconn.GetTracked();
         }
 
-        
+        /// <summary>
+        /// Setup for a new day.
+        /// </summary>
+        private void NewDay()
+        {
+            //Set/reset dayEnd if necissary
+            if(dayEnd == null || dayEnd.Day != DateTime.Today.Day)
+            {
+                DateTime now = DateTime.Today; //get today's datetime
+                dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 58, 0); //11:58 pm today
+            }
+            //get yesterday's data
+            DataTable yesterData = SQLconn.RecordByDate(DateTime.Today.AddDays(-1));
+            //get the leftover play time from yesterday
+            TimeSpan leftOver = (TimeSpan)yesterData.Rows[0]["availablePlay"];
+            availableStart = leftOver.Add(TimeSpan.FromHours(1));
+            SetDisplay();
+        }
+
         /// <summary>
         /// Set the day end time to record data if the program isn't turned off (it will save if shutoff)
         /// </summary>
-        private void SetForDay()
+        private void SetDisplay()
         {
             //Check if the data has been saved to the database, if not save it and flag saved.
             if (!saved)
             {
-                SQLconn.SaveVGtime(played + VGActive.Elapsed);
+                TimeSpan play = played + VGActive.Elapsed;
+                TimeSpan left = availableStart.Subtract(play);
+                SQLconn.SaveVGtime(play, left);
                 saved = true;
             }
-            
-            DateTime now = DateTime.Today; //get today's datetime
-            dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 58, 0); //11:58 pm today
-            DataTable todayData = SQLconn.NewDay(); //create a new entry for today if not yet created and get the values for today
+            //get the values for today abd create a new entry for today if not yet created
+            DataTable todayData = SQLconn.RecordByDate(DateTime.Today); 
             if (todayData == null) //make sure something was returned
             {
-                MessageBox.Show("Database Error", "Could not load database data for today.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show("Database Error", "Could not load data for today.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
             }
             VGActive = new Stopwatch(); //create a new stopwatch for the daily session
@@ -107,12 +127,14 @@ namespace SMtracker
             //Record played time to database if it is the end of the day
             if (!saved && DateTime.Now > dayEnd)
             {
-                SQLconn.SaveVGtime(played + VGActive.Elapsed);
+                TimeSpan play = played + VGActive.Elapsed;
+                TimeSpan left = availableStart.Subtract(play);
+                SQLconn.SaveVGtime(play, left);
                 saved = true;
             }
             //Create a new entry for the new day at 1 AM if running
             if (DateTime.Now.Hour == oneAM.Hour)
-                SetForDay();
+                NewDay();
 
             //Check if games are running, start the timers any are.
             if (GamesRunning())
@@ -166,8 +188,13 @@ namespace SMtracker
         {
             if (GamesRunning())
                 e.Cancel = true; //cancel close
-            else if(!saved)
-                SQLconn.SaveVGtime(played + VGActive.Elapsed);
+            //if closing, save if not saved
+            else if (!saved)
+            {
+                TimeSpan play = played + VGActive.Elapsed;
+                TimeSpan left = availableStart.Subtract(play);
+                SQLconn.SaveVGtime(play, left);
+            }
         }
 
         /// <summary>
@@ -196,7 +223,7 @@ namespace SMtracker
             //Submit the exercise time to the database adding the entered hours and minutes together
             if (SQLconn.AddExerciseTime(TimeSpan.FromMinutes((double)ExHours.Value*60+(double)ExMins.Value), type))
             {
-                SetForDay(); //update displays
+                SetDisplay(); //update displays
                 ExMins.Value = 0; //reset minutes counter to 0
                 ExHours.Value = 0; //reset hour counter to 0
             }
@@ -219,10 +246,13 @@ namespace SMtracker
                 //Create start position off to the side of the tracker, but not off the screen.
                 int x = Location.X - 675;
                 int y = Location.Y - 72;
+                //check for off the left and top of screen and set to edge 
                 if (x < 0)
                     x = 0;
                 if (y < 0)
                     y = 0;
+
+                //check for off the bottom and right side.  Check which monitor it is in
                 Screen[] screens = Screen.AllScreens;
                 Rectangle bounds;
                 if (screens[0] == Screen.FromControl(this))
@@ -241,7 +271,7 @@ namespace SMtracker
                 if (y + 320 > bounds.Height)
                     y = bounds.Height - 320;
                     
-                vd.Location = new Point(x, y);
+                vd.Location = new Point(x, y); //set starting location of ops window
             }
             vd.Show();
         }
@@ -254,7 +284,12 @@ namespace SMtracker
         private void Exit(object sender, EventArgs e)
         {
             if (!saved)
-                SQLconn.SaveVGtime(played + VGActive.Elapsed);
+            {
+                TimeSpan play = played + VGActive.Elapsed;
+                TimeSpan left = availableStart.Subtract(play);
+                SQLconn.SaveVGtime(play, left);
+                saved = true;
+            }
             if (!GamesRunning())
                 Application.Exit();
         }
@@ -266,15 +301,20 @@ namespace SMtracker
         /// <param name="e">Click or shortcut key F10</param>
         private void ShowOptions(object sender, EventArgs e)
         {
+            //If ops is null it has not been opened yet and needs to be created.
             if (ops == null)
             {
                 ops = new OptionWindow(this);
+                //Set the ops window to be to the right of this window, but not off the screen
                 int x = Location.X + 390;
                 int y = Location.Y - 72;
+                //check for off the left and top of screen and set to edge 
                 if (x < 0)
                     x = 0;
                 if (y < 0)
                     y = 0;
+
+                //check for off the bottom and right side.  Check which monitor it is in
                 Screen[] screens = Screen.AllScreens;
                 Rectangle bounds;
                 if (screens[0] == Screen.FromControl(this))
@@ -292,7 +332,8 @@ namespace SMtracker
                 }
                 if (y + 489 > bounds.Height)
                     y = bounds.Height - 489;
-                ops.Location = new Point(x, y);
+
+                ops.Location = new Point(x, y); //set starting location of ops window
             }
             ops.Show();
         }
