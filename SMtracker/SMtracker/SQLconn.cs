@@ -25,11 +25,24 @@ namespace SMtracker
         {
             string dayDate = day.Date.ToShortDateString();
             DataTable dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + dayDate + "'");
-            if(dt != null && dt.Rows.Count == 0 && day.Date <= DateTime.Now.Date)
+            if((dt == null || dt.Rows.Count == 0) && day.Date <= DateTime.Now.Date)
             {
-                //Insert an entry for today into
-                NonQuery("INSERT INTO VGRecord (VGDate) VALUES ('" + dayDate + "')");
-                dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + dayDate + "'");
+                //get the leftover play time from yesterday
+                DataTable yesterData = QueryDatabase("SELECT availablePlay FROM VGRecord WHERE VGDate = '" +
+                    DateTime.Today.AddDays(-1).ToString() + "'");
+                if (yesterData != null)
+                {
+                    TimeSpan availablePlay = (TimeSpan)yesterData.Rows[0]["availablePlay"];
+                    availablePlay = availablePlay.Add(TimeSpan.FromHours(1));
+                    //Insert an entry for today
+                    if (NonQuery(string.Format("INSERT INTO VGRecord (VGDate, availablePlay) VALUES ('{0}', '{1}')",
+                            dayDate, availablePlay.ToString())))
+                        dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + dayDate + "'");
+
+                }
+                //Insert an entry for today without a specified availablePlay (default of 1 hour)
+                else if (NonQuery(string.Format("INSERT INTO VGRecord (VGDate) VALUES ('{0}')", dayDate)))
+                    dt = QueryDatabase("SELECT * FROM VGRecord WHERE VGDate = '" + dayDate + "'");
             }
             return dt;
         }
@@ -70,27 +83,6 @@ namespace SMtracker
         {
             return NonQuery(string.Format("UPDATE VGRecord SET played = '{0}', availablePlay = '{1}' WHERE VGDate = '{2}'",
                 played.ToString(), available.ToString(), DateTime.Today.ToString()));
-            /*DateTime today = DateTime.Today;
-            if (NonQuery(string.Format("UPDATE VGRecord SET played = '{0}' WHERE VGDate = '{1}'", played.ToString(),
-                today.ToString())))
-            {
-                DataTable rec = QueryDatabase(string.Format("SELECT played, exerciseTotal FROM VGRecord WHERE VGDate = '{0}'", 
-                    today.ToString()));
-                if(rec != null && rec.Rows.Count == 1)
-                {
-                    TimeSpan availablePlay = (TimeSpan)rec.Rows[0]["exerciseTotal"];
-                    availablePlay = availablePlay.Add(TimeSpan.FromHours(1));
-                    if(availablePlay > (TimeSpan)rec.Rows[0]["played"])
-                        availablePlay = availablePlay.Subtract((TimeSpan)rec.Rows[0]["played"]);
-                    else
-                        availablePlay = new TimeSpan(0);
-                    return NonQuery(string.Format("UPDATE VGRecord SET availablePlay = '{0}' WHERE VGDate = '{1}'",
-                        availablePlay.ToString(), today.ToString()));
-                }
-                return false;
-            }
-            else
-                return false;*/
         }
 
         /// <summary>

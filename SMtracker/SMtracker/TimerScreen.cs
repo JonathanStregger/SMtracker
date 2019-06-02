@@ -48,42 +48,26 @@ namespace SMtracker
             oneAM = new DateTime(2019,5,22,1,0,0); //1 AM
 
             CheckActive.Start(); //Start the activity checking timer
-            NewDay(); //setup for the day
+            SetData(); //setup for the day
             trackedProcesses = SQLconn.GetTracked();
-        }
-
-        /// <summary>
-        /// Setup for a new day.
-        /// </summary>
-        private void NewDay()
-        {
-            //Set/reset dayEnd if necissary
-            if(dayEnd == null || dayEnd.Day != DateTime.Today.Day)
-            {
-                DateTime now = DateTime.Today; //get today's datetime
-                dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 58, 0); //11:58 pm today
-            }
-            //get yesterday's data
-            DataTable yesterData = SQLconn.RecordByDate(DateTime.Today.AddDays(-1));
-            //get the leftover play time from yesterday
-            TimeSpan leftOver = (TimeSpan)yesterData.Rows[0]["availablePlay"];
-            availableStart = leftOver.Add(TimeSpan.FromHours(1));
-            SetDisplay();
         }
 
         /// <summary>
         /// Set the day end time to record data if the program isn't turned off (it will save if shutoff)
         /// </summary>
-        private void SetDisplay()
+        private void SetData()
         {
+            //Set/reset dayEnd if necissary
+            if(dayEnd == null || dayEnd.Day != DateTime.Today.Day)
+            {
+                DateTime now = DateTime.Today; //get today's date
+                dayEnd = new DateTime(now.Day, now.Month, now.Day, 23, 58, 0); //11:58 pm today
+            }
+            
             //Check if the data has been saved to the database, if not save it and flag saved.
             if (!saved)
-            {
-                TimeSpan play = played + VGActive.Elapsed;
-                TimeSpan left = availableStart.Subtract(play);
-                SQLconn.SaveVGtime(play, left);
-                saved = true;
-            }
+                saved = SavePlay();
+
             //get the values for today abd create a new entry for today if not yet created
             DataTable todayData = SQLconn.RecordByDate(DateTime.Today); 
             if (todayData == null) //make sure something was returned
@@ -95,6 +79,7 @@ namespace SMtracker
             played = (TimeSpan)todayData.Rows[0]["played"]; //retrieve the played time for the day
             exerciseTotal = (TimeSpan)todayData.Rows[0]["exerciseTotal"]; //retrieve the exercise total time for the day
             ExerciseTotalLbl.Text = exerciseTotal.ToString(); //set the text of the exercise total label.
+            availableStart = (TimeSpan)todayData.Rows[0]["availablePlay"]; //get the available play for today.
             UpdateTime(null, null); //set the time active and time left labels
             if (vd != null) //update the data view if it has been created
                 vd.UpdateView();
@@ -126,15 +111,11 @@ namespace SMtracker
         {
             //Record played time to database if it is the end of the day
             if (!saved && DateTime.Now > dayEnd)
-            {
-                TimeSpan play = played + VGActive.Elapsed;
-                TimeSpan left = availableStart.Subtract(play);
-                SQLconn.SaveVGtime(play, left);
-                saved = true;
-            }
+                saved = SavePlay();
+
             //Create a new entry for the new day at 1 AM if running
             if (DateTime.Now.Hour == oneAM.Hour)
-                NewDay();
+                SetData();
 
             //Check if games are running, start the timers any are.
             if (GamesRunning())
@@ -143,16 +124,16 @@ namespace SMtracker
                 {
                     VGActive.Start();
                     VGUpdate.Start();
+                    saved = false;
                 }
 
                 //If in treatment phase, when the played time exceeds the available play time: SOUND THE ALARM!!!
-                if ((VGActive.Elapsed + played) >= exerciseTotal.Add(TimeSpan.FromHours(1)) && DateTime.Now > treatmentStart)
+                if ((VGActive.Elapsed + played) >= availableStart && DateTime.Now > treatmentStart)
                 {
                     string dir = System.AppContext.BaseDirectory + "sound.wav";
                     System.Media.SoundPlayer alarm = new System.Media.SoundPlayer(dir);
                     alarm.Play();
                 }
-                saved = false;
             }
             //If games are not running, deactivate the timers
             else if(VGActive.IsRunning)
@@ -173,7 +154,7 @@ namespace SMtracker
             TimeSpan ts = played + VGActive.Elapsed;
             TimeActive.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
             //Get the remaining play time and display it
-            ts = exerciseTotal.Add(TimeSpan.FromHours(1)) - ts;
+            ts = availableStart.Subtract(VGActive.Elapsed);
             TimeLeftLbl.Text = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
             if (notifyIcon.Visible)
                 notifyIcon.Text = "Available: " + TimeLeftLbl.Text;
@@ -189,12 +170,23 @@ namespace SMtracker
             if (GamesRunning())
                 e.Cancel = true; //cancel close
             //if closing, save if not saved
-            else if (!saved)
-            {
-                TimeSpan play = played + VGActive.Elapsed;
-                TimeSpan left = availableStart.Subtract(play);
-                SQLconn.SaveVGtime(play, left);
-            }
+            else
+                saved = SavePlay();
+        }
+
+        /// <summary>
+        /// Saves the play time
+        /// </summary>
+        /// <returns></returns>
+        private bool SavePlay()
+        {
+            played = played.Add(VGActive.Elapsed);
+            TimeSpan left = availableStart.Subtract(VGActive.Elapsed);
+            if (VGActive.IsRunning)
+                VGActive.Restart();
+            else
+                VGActive.Reset();
+            return SQLconn.SaveVGtime(played, left);
         }
 
         /// <summary>
@@ -223,7 +215,7 @@ namespace SMtracker
             //Submit the exercise time to the database adding the entered hours and minutes together
             if (SQLconn.AddExerciseTime(TimeSpan.FromMinutes((double)ExHours.Value*60+(double)ExMins.Value), type))
             {
-                SetDisplay(); //update displays
+                SetData(); //update displays
                 ExMins.Value = 0; //reset minutes counter to 0
                 ExHours.Value = 0; //reset hour counter to 0
             }
@@ -283,13 +275,11 @@ namespace SMtracker
         /// <param name="e">Click or shortcut key Alt-F4</param>
         private void Exit(object sender, EventArgs e)
         {
+            //Save if needed
             if (!saved)
-            {
-                TimeSpan play = played + VGActive.Elapsed;
-                TimeSpan left = availableStart.Subtract(play);
-                SQLconn.SaveVGtime(play, left);
-                saved = true;
-            }
+                saved = SavePlay();
+
+            //only exit if games are not running
             if (!GamesRunning())
                 Application.Exit();
         }
