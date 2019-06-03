@@ -128,7 +128,7 @@ namespace SMtracker
                 }
 
                 //If in treatment phase, when the played time exceeds the available play time: SOUND THE ALARM!!!
-                if ((VGActive.Elapsed + played) >= availableStart && DateTime.Now > treatmentStart)
+                if (availableStart.Subtract(VGActive.Elapsed) <= TimeSpan.FromTicks(0) && DateTime.Now > treatmentStart)
                 {
                     string dir = System.AppContext.BaseDirectory + "sound.wav";
                     System.Media.SoundPlayer alarm = new System.Media.SoundPlayer(dir);
@@ -182,11 +182,18 @@ namespace SMtracker
         {
             played = played.Add(VGActive.Elapsed);
             TimeSpan left = availableStart.Subtract(VGActive.Elapsed);
-            if (VGActive.IsRunning)
-                VGActive.Restart();
-            else
-                VGActive.Reset();
-            return SQLconn.SaveVGtime(played, left);
+            //save the new play time to the database
+            if (SQLconn.SaveVGtime(played, left))
+            {
+                //if the save was successful, then reset playtime timer and the timeleft.
+                if (VGActive.IsRunning)
+                    VGActive.Restart();
+                else
+                    VGActive.Reset();
+                availableStart = left;
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -213,8 +220,10 @@ namespace SMtracker
             }
 
             //Submit the exercise time to the database adding the entered hours and minutes together
-            if (SQLconn.AddExerciseTime(TimeSpan.FromMinutes((double)ExHours.Value*60+(double)ExMins.Value), type))
+            TimeSpan exercise = TimeSpan.FromMinutes((double)ExHours.Value * 60 + (double)ExMins.Value);
+            if (SQLconn.AddExerciseTime(exercise, type))
             {
+                availableStart = availableStart.Add(exercise);
                 SetData(); //update displays
                 ExMins.Value = 0; //reset minutes counter to 0
                 ExHours.Value = 0; //reset hour counter to 0
