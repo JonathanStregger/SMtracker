@@ -33,9 +33,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewData));
             this.DataView = new System.Windows.Forms.DataGridView();
-            this.vGRecordBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.sMDataDataSet = new SMtracker.SMDataDataSet();
-            this.vGRecordTableAdapter = new SMtracker.SMDataDataSetTableAdapters.VGRecordTableAdapter();
             this.DoW = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -45,6 +42,9 @@
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.vGRecordBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.sMDataDataSet = new SMtracker.SMDataDataSet();
+            this.vGRecordTableAdapter = new SMtracker.SMDataDataSetTableAdapters.VGRecordTableAdapter();
             ((System.ComponentModel.ISupportInitialize)(this.DataView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vGRecordBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sMDataDataSet)).BeginInit();
@@ -88,20 +88,6 @@
             this.DataView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.DataView.Size = new System.Drawing.Size(610, 257);
             this.DataView.TabIndex = 0;
-            // 
-            // vGRecordBindingSource
-            // 
-            this.vGRecordBindingSource.DataMember = "VGRecord";
-            this.vGRecordBindingSource.DataSource = this.sMDataDataSet;
-            // 
-            // sMDataDataSet
-            // 
-            this.sMDataDataSet.DataSetName = "SMDataDataSet";
-            this.sMDataDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // vGRecordTableAdapter
-            // 
-            this.vGRecordTableAdapter.ClearBeforeFill = true;
             // 
             // DoW
             // 
@@ -185,6 +171,20 @@
             this.dataGridViewTextBoxColumn8.ReadOnly = true;
             this.dataGridViewTextBoxColumn8.ToolTipText = "Time working out";
             // 
+            // vGRecordBindingSource
+            // 
+            this.vGRecordBindingSource.DataMember = "VGRecord";
+            this.vGRecordBindingSource.DataSource = this.sMDataDataSet;
+            // 
+            // sMDataDataSet
+            // 
+            this.sMDataDataSet.DataSetName = "SMDataDataSet";
+            this.sMDataDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // vGRecordTableAdapter
+            // 
+            this.vGRecordTableAdapter.ClearBeforeFill = true;
+            // 
             // ViewData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -193,6 +193,8 @@
             this.Controls.Add(this.DataView);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(650, 320);
             this.Name = "ViewData";
             this.ShowInTaskbar = false;

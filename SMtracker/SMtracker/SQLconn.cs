@@ -146,15 +146,19 @@ namespace SMtracker
                     return true;
                 }
                 
-                Connection.Close();
                 return false;
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
-                Connection.Close();
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
+                //System.Windows.Forms.MessageBox.Show(ex.ToString());
                 return false;
             }
+            finally
+            {
+                if (Connection.State == ConnectionState.Open)
+                    Connection.Close();
+            }
+
         }
 
         /// <summary>
@@ -178,15 +182,18 @@ namespace SMtracker
                 DataTable data = new DataTable();
                 da.Fill(data);
                 da.Dispose();
-                Connection.Close();
                 return data;
             }
-            catch (Exception ex)
+            catch //(Exception ex)
             {
-                System.Windows.Forms.MessageBox.Show(ex.ToString());
+                //System.Windows.Forms.MessageBox.Show(ex.ToString());
                 //If no data returned, return null
-                Connection.Close();
                 return null;
+            }
+            finally
+            {
+                if(Connection.State == ConnectionState.Open)
+                    Connection.Close();
             }
         }
 
