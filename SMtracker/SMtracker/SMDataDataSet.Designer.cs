@@ -326,7 +326,7 @@ namespace SMtracker {
             
             private global::System.Data.DataColumn columnyardwork;
             
-            private global::System.Data.DataColumn columnbike;
+            private global::System.Data.DataColumn columncardio;
             
             private global::System.Data.DataColumn columnworkout;
             
@@ -413,9 +413,9 @@ namespace SMtracker {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public global::System.Data.DataColumn bikeColumn {
+            public global::System.Data.DataColumn cardioColumn {
                 get {
-                    return this.columnbike;
+                    return this.columncardio;
                 }
             }
             
@@ -464,7 +464,7 @@ namespace SMtracker {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public VGRecordRow AddVGRecordRow(System.DateTime VGDate, System.TimeSpan played, System.TimeSpan availablePlay, System.TimeSpan exerciseTotal, System.TimeSpan walk, System.TimeSpan yardwork, System.TimeSpan bike, System.TimeSpan workout) {
+            public VGRecordRow AddVGRecordRow(System.DateTime VGDate, System.TimeSpan played, System.TimeSpan availablePlay, System.TimeSpan exerciseTotal, System.TimeSpan walk, System.TimeSpan yardwork, System.TimeSpan cardio, System.TimeSpan workout) {
                 VGRecordRow rowVGRecordRow = ((VGRecordRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         VGDate,
@@ -473,7 +473,7 @@ namespace SMtracker {
                         exerciseTotal,
                         walk,
                         yardwork,
-                        bike,
+                        cardio,
                         workout};
                 rowVGRecordRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowVGRecordRow);
@@ -510,7 +510,7 @@ namespace SMtracker {
                 this.columnexerciseTotal = base.Columns["exerciseTotal"];
                 this.columnwalk = base.Columns["walk"];
                 this.columnyardwork = base.Columns["yardwork"];
-                this.columnbike = base.Columns["bike"];
+                this.columncardio = base.Columns["cardio"];
                 this.columnworkout = base.Columns["workout"];
             }
             
@@ -529,8 +529,8 @@ namespace SMtracker {
                 base.Columns.Add(this.columnwalk);
                 this.columnyardwork = new global::System.Data.DataColumn("yardwork", typeof(global::System.TimeSpan), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnyardwork);
-                this.columnbike = new global::System.Data.DataColumn("bike", typeof(global::System.TimeSpan), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnbike);
+                this.columncardio = new global::System.Data.DataColumn("cardio", typeof(global::System.TimeSpan), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columncardio);
                 this.columnworkout = new global::System.Data.DataColumn("workout", typeof(global::System.TimeSpan), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnworkout);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
@@ -542,7 +542,7 @@ namespace SMtracker {
                 this.columnexerciseTotal.AllowDBNull = false;
                 this.columnwalk.AllowDBNull = false;
                 this.columnyardwork.AllowDBNull = false;
-                this.columnbike.AllowDBNull = false;
+                this.columncardio.AllowDBNull = false;
                 this.columnworkout.AllowDBNull = false;
             }
             
@@ -1027,12 +1027,12 @@ namespace SMtracker {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
-            public System.TimeSpan bike {
+            public System.TimeSpan cardio {
                 get {
-                    return ((global::System.TimeSpan)(this[this.tableVGRecord.bikeColumn]));
+                    return ((global::System.TimeSpan)(this[this.tableVGRecord.cardioColumn]));
                 }
                 set {
-                    this[this.tableVGRecord.bikeColumn] = value;
+                    this[this.tableVGRecord.cardioColumn] = value;
                 }
             }
             
@@ -1284,12 +1284,12 @@ namespace SMtracker.SMDataDataSetTableAdapters {
             tableMapping.ColumnMappings.Add("exerciseTotal", "exerciseTotal");
             tableMapping.ColumnMappings.Add("walk", "walk");
             tableMapping.ColumnMappings.Add("yardwork", "yardwork");
-            tableMapping.ColumnMappings.Add("bike", "bike");
+            tableMapping.ColumnMappings.Add("cardio", "cardio");
             tableMapping.ColumnMappings.Add("workout", "workout");
             this._adapter.TableMappings.Add(tableMapping);
             this._adapter.DeleteCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.DeleteCommand.Connection = this.Connection;
-            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[VGRecord] WHERE (([VGDate] = @Original_VGDate) AND ([played] = @Original_played) AND ([availablePlay] = @Original_availablePlay) AND ([exerciseTotal] = @Original_exerciseTotal) AND ([walk] = @Original_walk) AND ([yardwork] = @Original_yardwork) AND ([bike] = @Original_bike) AND ([workout] = @Original_workout))";
+            this._adapter.DeleteCommand.CommandText = @"DELETE FROM [dbo].[VGRecord] WHERE (([VGDate] = @Original_VGDate) AND ([played] = @Original_played) AND ([availablePlay] = @Original_availablePlay) AND ([exerciseTotal] = @Original_exerciseTotal) AND ([walk] = @Original_walk) AND ([yardwork] = @Original_yardwork) AND ([cardio] = @Original_cardio) AND ([workout] = @Original_workout))";
             this._adapter.DeleteCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_VGDate", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "VGDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_played", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "played", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -1297,12 +1297,12 @@ namespace SMtracker.SMDataDataSetTableAdapters {
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_exerciseTotal", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "exerciseTotal", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_walk", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "walk", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_yardwork", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "yardwork", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_bike", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "bike", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_cardio", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "cardio", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.DeleteCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_workout", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "workout", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.InsertCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.InsertCommand.Connection = this.Connection;
-            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[VGRecord] ([VGDate], [played], [availablePlay], [exerciseTotal], [walk], [yardwork], [bike], [workout]) VALUES (@VGDate, @played, @availablePlay, @exerciseTotal, @walk, @yardwork, @bike, @workout);
-SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, workout FROM VGRecord WHERE (VGDate = @VGDate)";
+            this._adapter.InsertCommand.CommandText = @"INSERT INTO [dbo].[VGRecord] ([VGDate], [played], [availablePlay], [exerciseTotal], [walk], [yardwork], [cardio], [workout]) VALUES (@VGDate, @played, @availablePlay, @exerciseTotal, @walk, @yardwork, @cardio, @workout);
+SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, cardio, workout FROM VGRecord WHERE (VGDate = @VGDate)";
             this._adapter.InsertCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@VGDate", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "VGDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@played", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "played", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -1310,12 +1310,12 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@exerciseTotal", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "exerciseTotal", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@walk", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "walk", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@yardwork", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "yardwork", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@bike", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "bike", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@cardio", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "cardio", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.InsertCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@workout", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "workout", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand = new global::System.Data.SqlClient.SqlCommand();
             this._adapter.UpdateCommand.Connection = this.Connection;
-            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[VGRecord] SET [VGDate] = @VGDate, [played] = @played, [availablePlay] = @availablePlay, [exerciseTotal] = @exerciseTotal, [walk] = @walk, [yardwork] = @yardwork, [bike] = @bike, [workout] = @workout WHERE (([VGDate] = @Original_VGDate) AND ([played] = @Original_played) AND ([availablePlay] = @Original_availablePlay) AND ([exerciseTotal] = @Original_exerciseTotal) AND ([walk] = @Original_walk) AND ([yardwork] = @Original_yardwork) AND ([bike] = @Original_bike) AND ([workout] = @Original_workout));
-SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, workout FROM VGRecord WHERE (VGDate = @VGDate)";
+            this._adapter.UpdateCommand.CommandText = @"UPDATE [dbo].[VGRecord] SET [VGDate] = @VGDate, [played] = @played, [availablePlay] = @availablePlay, [exerciseTotal] = @exerciseTotal, [walk] = @walk, [yardwork] = @yardwork, [cardio] = @cardio, [workout] = @workout WHERE (([VGDate] = @Original_VGDate) AND ([played] = @Original_played) AND ([availablePlay] = @Original_availablePlay) AND ([exerciseTotal] = @Original_exerciseTotal) AND ([walk] = @Original_walk) AND ([yardwork] = @Original_yardwork) AND ([cardio] = @Original_cardio) AND ([workout] = @Original_workout));
+SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, cardio, workout FROM VGRecord WHERE (VGDate = @VGDate)";
             this._adapter.UpdateCommand.CommandType = global::System.Data.CommandType.Text;
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@VGDate", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "VGDate", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@played", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "played", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -1323,7 +1323,7 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@exerciseTotal", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "exerciseTotal", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@walk", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "walk", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@yardwork", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "yardwork", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@bike", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "bike", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@cardio", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "cardio", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@workout", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "workout", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_VGDate", global::System.Data.SqlDbType.Date, 0, global::System.Data.ParameterDirection.Input, 0, 0, "VGDate", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_played", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "played", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
@@ -1331,7 +1331,7 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_exerciseTotal", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "exerciseTotal", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_walk", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "walk", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_yardwork", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "yardwork", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
-            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_bike", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "bike", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_cardio", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "cardio", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._adapter.UpdateCommand.Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Original_workout", global::System.Data.SqlDbType.Time, 0, global::System.Data.ParameterDirection.Input, 0, 0, "workout", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
         }
         
@@ -1348,8 +1348,8 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
             this._commandCollection = new global::System.Data.SqlClient.SqlCommand[1];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, workou" +
-                "t FROM dbo.VGRecord";
+            this._commandCollection[0].CommandText = "SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, cardio, work" +
+                "out FROM dbo.VGRecord";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         
@@ -1410,14 +1410,14 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Delete, true)]
-        public virtual int Delete(System.DateTime Original_VGDate, System.TimeSpan Original_played, System.TimeSpan Original_availablePlay, System.TimeSpan Original_exerciseTotal, System.TimeSpan Original_walk, System.TimeSpan Original_yardwork, System.TimeSpan Original_bike, System.TimeSpan Original_workout) {
+        public virtual int Delete(System.DateTime Original_VGDate, System.TimeSpan Original_played, System.TimeSpan Original_availablePlay, System.TimeSpan Original_exerciseTotal, System.TimeSpan Original_walk, System.TimeSpan Original_yardwork, System.TimeSpan Original_cardio, System.TimeSpan Original_workout) {
             this.Adapter.DeleteCommand.Parameters[0].Value = ((System.DateTime)(Original_VGDate));
             this.Adapter.DeleteCommand.Parameters[1].Value = ((System.TimeSpan)(Original_played));
             this.Adapter.DeleteCommand.Parameters[2].Value = ((System.TimeSpan)(Original_availablePlay));
             this.Adapter.DeleteCommand.Parameters[3].Value = ((System.TimeSpan)(Original_exerciseTotal));
             this.Adapter.DeleteCommand.Parameters[4].Value = ((System.TimeSpan)(Original_walk));
             this.Adapter.DeleteCommand.Parameters[5].Value = ((System.TimeSpan)(Original_yardwork));
-            this.Adapter.DeleteCommand.Parameters[6].Value = ((System.TimeSpan)(Original_bike));
+            this.Adapter.DeleteCommand.Parameters[6].Value = ((System.TimeSpan)(Original_cardio));
             this.Adapter.DeleteCommand.Parameters[7].Value = ((System.TimeSpan)(Original_workout));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.DeleteCommand.Connection.State;
             if (((this.Adapter.DeleteCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -1439,14 +1439,14 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, true)]
-        public virtual int Insert(System.DateTime VGDate, System.TimeSpan played, System.TimeSpan availablePlay, System.TimeSpan exerciseTotal, System.TimeSpan walk, System.TimeSpan yardwork, System.TimeSpan bike, System.TimeSpan workout) {
+        public virtual int Insert(System.DateTime VGDate, System.TimeSpan played, System.TimeSpan availablePlay, System.TimeSpan exerciseTotal, System.TimeSpan walk, System.TimeSpan yardwork, System.TimeSpan cardio, System.TimeSpan workout) {
             this.Adapter.InsertCommand.Parameters[0].Value = ((System.DateTime)(VGDate));
             this.Adapter.InsertCommand.Parameters[1].Value = ((System.TimeSpan)(played));
             this.Adapter.InsertCommand.Parameters[2].Value = ((System.TimeSpan)(availablePlay));
             this.Adapter.InsertCommand.Parameters[3].Value = ((System.TimeSpan)(exerciseTotal));
             this.Adapter.InsertCommand.Parameters[4].Value = ((System.TimeSpan)(walk));
             this.Adapter.InsertCommand.Parameters[5].Value = ((System.TimeSpan)(yardwork));
-            this.Adapter.InsertCommand.Parameters[6].Value = ((System.TimeSpan)(bike));
+            this.Adapter.InsertCommand.Parameters[6].Value = ((System.TimeSpan)(cardio));
             this.Adapter.InsertCommand.Parameters[7].Value = ((System.TimeSpan)(workout));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.InsertCommand.Connection.State;
             if (((this.Adapter.InsertCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -1475,7 +1475,7 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
                     System.TimeSpan exerciseTotal, 
                     System.TimeSpan walk, 
                     System.TimeSpan yardwork, 
-                    System.TimeSpan bike, 
+                    System.TimeSpan cardio, 
                     System.TimeSpan workout, 
                     System.DateTime Original_VGDate, 
                     System.TimeSpan Original_played, 
@@ -1483,7 +1483,7 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
                     System.TimeSpan Original_exerciseTotal, 
                     System.TimeSpan Original_walk, 
                     System.TimeSpan Original_yardwork, 
-                    System.TimeSpan Original_bike, 
+                    System.TimeSpan Original_cardio, 
                     System.TimeSpan Original_workout) {
             this.Adapter.UpdateCommand.Parameters[0].Value = ((System.DateTime)(VGDate));
             this.Adapter.UpdateCommand.Parameters[1].Value = ((System.TimeSpan)(played));
@@ -1491,7 +1491,7 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
             this.Adapter.UpdateCommand.Parameters[3].Value = ((System.TimeSpan)(exerciseTotal));
             this.Adapter.UpdateCommand.Parameters[4].Value = ((System.TimeSpan)(walk));
             this.Adapter.UpdateCommand.Parameters[5].Value = ((System.TimeSpan)(yardwork));
-            this.Adapter.UpdateCommand.Parameters[6].Value = ((System.TimeSpan)(bike));
+            this.Adapter.UpdateCommand.Parameters[6].Value = ((System.TimeSpan)(cardio));
             this.Adapter.UpdateCommand.Parameters[7].Value = ((System.TimeSpan)(workout));
             this.Adapter.UpdateCommand.Parameters[8].Value = ((System.DateTime)(Original_VGDate));
             this.Adapter.UpdateCommand.Parameters[9].Value = ((System.TimeSpan)(Original_played));
@@ -1499,7 +1499,7 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
             this.Adapter.UpdateCommand.Parameters[11].Value = ((System.TimeSpan)(Original_exerciseTotal));
             this.Adapter.UpdateCommand.Parameters[12].Value = ((System.TimeSpan)(Original_walk));
             this.Adapter.UpdateCommand.Parameters[13].Value = ((System.TimeSpan)(Original_yardwork));
-            this.Adapter.UpdateCommand.Parameters[14].Value = ((System.TimeSpan)(Original_bike));
+            this.Adapter.UpdateCommand.Parameters[14].Value = ((System.TimeSpan)(Original_cardio));
             this.Adapter.UpdateCommand.Parameters[15].Value = ((System.TimeSpan)(Original_workout));
             global::System.Data.ConnectionState previousConnectionState = this.Adapter.UpdateCommand.Connection.State;
             if (((this.Adapter.UpdateCommand.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -1521,8 +1521,8 @@ SELECT VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, worko
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "15.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, true)]
-        public virtual int Update(System.TimeSpan played, System.TimeSpan availablePlay, System.TimeSpan exerciseTotal, System.TimeSpan walk, System.TimeSpan yardwork, System.TimeSpan bike, System.TimeSpan workout, System.DateTime Original_VGDate, System.TimeSpan Original_played, System.TimeSpan Original_availablePlay, System.TimeSpan Original_exerciseTotal, System.TimeSpan Original_walk, System.TimeSpan Original_yardwork, System.TimeSpan Original_bike, System.TimeSpan Original_workout) {
-            return this.Update(Original_VGDate, played, availablePlay, exerciseTotal, walk, yardwork, bike, workout, Original_VGDate, Original_played, Original_availablePlay, Original_exerciseTotal, Original_walk, Original_yardwork, Original_bike, Original_workout);
+        public virtual int Update(System.TimeSpan played, System.TimeSpan availablePlay, System.TimeSpan exerciseTotal, System.TimeSpan walk, System.TimeSpan yardwork, System.TimeSpan cardio, System.TimeSpan workout, System.DateTime Original_VGDate, System.TimeSpan Original_played, System.TimeSpan Original_availablePlay, System.TimeSpan Original_exerciseTotal, System.TimeSpan Original_walk, System.TimeSpan Original_yardwork, System.TimeSpan Original_cardio, System.TimeSpan Original_workout) {
+            return this.Update(Original_VGDate, played, availablePlay, exerciseTotal, walk, yardwork, cardio, workout, Original_VGDate, Original_played, Original_availablePlay, Original_exerciseTotal, Original_walk, Original_yardwork, Original_cardio, Original_workout);
         }
     }
     

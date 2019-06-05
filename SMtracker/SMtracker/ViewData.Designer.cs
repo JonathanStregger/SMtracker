@@ -33,6 +33,9 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ViewData));
             this.DataView = new System.Windows.Forms.DataGridView();
+            this.vGRecordBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.sMDataDataSet = new SMtracker.SMDataDataSet();
+            this.vGRecordTableAdapter = new SMtracker.SMDataDataSetTableAdapters.VGRecordTableAdapter();
             this.DoW = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -42,9 +45,6 @@
             this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn7 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn8 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.vGRecordBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.sMDataDataSet = new SMtracker.SMDataDataSet();
-            this.vGRecordTableAdapter = new SMtracker.SMDataDataSetTableAdapters.VGRecordTableAdapter();
             ((System.ComponentModel.ISupportInitialize)(this.DataView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vGRecordBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sMDataDataSet)).BeginInit();
@@ -88,6 +88,20 @@
             this.DataView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.DataView.Size = new System.Drawing.Size(610, 257);
             this.DataView.TabIndex = 0;
+            // 
+            // vGRecordBindingSource
+            // 
+            this.vGRecordBindingSource.DataMember = "VGRecord";
+            this.vGRecordBindingSource.DataSource = this.sMDataDataSet;
+            // 
+            // sMDataDataSet
+            // 
+            this.sMDataDataSet.DataSetName = "SMDataDataSet";
+            this.sMDataDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
+            // 
+            // vGRecordTableAdapter
+            // 
+            this.vGRecordTableAdapter.ClearBeforeFill = true;
             // 
             // DoW
             // 
@@ -152,12 +166,12 @@
             // 
             // dataGridViewTextBoxColumn7
             // 
-            this.dataGridViewTextBoxColumn7.DataPropertyName = "bike";
-            this.dataGridViewTextBoxColumn7.HeaderText = "Bike";
+            this.dataGridViewTextBoxColumn7.DataPropertyName = "cardio";
+            this.dataGridViewTextBoxColumn7.HeaderText = "Cardio";
             this.dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
             this.dataGridViewTextBoxColumn7.ReadOnly = true;
-            this.dataGridViewTextBoxColumn7.ToolTipText = "Time biking";
-            this.dataGridViewTextBoxColumn7.Width = 53;
+            this.dataGridViewTextBoxColumn7.ToolTipText = "Time doing cardio";
+            this.dataGridViewTextBoxColumn7.Width = 62;
             // 
             // dataGridViewTextBoxColumn8
             // 
@@ -170,20 +184,6 @@
             this.dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             this.dataGridViewTextBoxColumn8.ReadOnly = true;
             this.dataGridViewTextBoxColumn8.ToolTipText = "Time working out";
-            // 
-            // vGRecordBindingSource
-            // 
-            this.vGRecordBindingSource.DataMember = "VGRecord";
-            this.vGRecordBindingSource.DataSource = this.sMDataDataSet;
-            // 
-            // sMDataDataSet
-            // 
-            this.sMDataDataSet.DataSetName = "SMDataDataSet";
-            this.sMDataDataSet.SchemaSerializationMode = System.Data.SchemaSerializationMode.IncludeSchema;
-            // 
-            // vGRecordTableAdapter
-            // 
-            this.vGRecordTableAdapter.ClearBeforeFill = true;
             // 
             // ViewData
             // 
@@ -218,7 +218,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn exerciseTotalDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn walkDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn yardworkDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn bikeDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn cardioDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn workoutDataGridViewTextBoxColumn;
         private SMDataDataSet sMDataDataSet;
         private System.Windows.Forms.BindingSource vGRecordBindingSource;

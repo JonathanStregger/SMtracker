@@ -46,7 +46,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.walkRBtn = new System.Windows.Forms.RadioButton();
             this.yardworkRbtn = new System.Windows.Forms.RadioButton();
-            this.bikeRBtn = new System.Windows.Forms.RadioButton();
+            this.cardioRBtn = new System.Windows.Forms.RadioButton();
             this.workoutRBtn = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -208,20 +208,20 @@
             this.yardworkRbtn.Text = "Yardwork";
             this.yardworkRbtn.UseVisualStyleBackColor = true;
             // 
-            // bikeRBtn
+            // cardioRBtn
             // 
-            this.bikeRBtn.AutoSize = true;
-            this.bikeRBtn.Location = new System.Drawing.Point(180, 109);
-            this.bikeRBtn.Name = "bikeRBtn";
-            this.bikeRBtn.Size = new System.Drawing.Size(46, 17);
-            this.bikeRBtn.TabIndex = 4;
-            this.bikeRBtn.Text = "Bike";
-            this.bikeRBtn.UseVisualStyleBackColor = true;
+            this.cardioRBtn.AutoSize = true;
+            this.cardioRBtn.Location = new System.Drawing.Point(180, 109);
+            this.cardioRBtn.Name = "cardioRBtn";
+            this.cardioRBtn.Size = new System.Drawing.Size(55, 17);
+            this.cardioRBtn.TabIndex = 4;
+            this.cardioRBtn.Text = "Cardio";
+            this.cardioRBtn.UseVisualStyleBackColor = true;
             // 
             // workoutRBtn
             // 
             this.workoutRBtn.AutoSize = true;
-            this.workoutRBtn.Location = new System.Drawing.Point(233, 109);
+            this.workoutRBtn.Location = new System.Drawing.Point(241, 109);
             this.workoutRBtn.Name = "workoutRBtn";
             this.workoutRBtn.Size = new System.Drawing.Size(66, 17);
             this.workoutRBtn.TabIndex = 5;
@@ -294,7 +294,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(349, 138);
             this.Controls.Add(this.workoutRBtn);
-            this.Controls.Add(this.bikeRBtn);
+            this.Controls.Add(this.cardioRBtn);
             this.Controls.Add(this.yardworkRbtn);
             this.Controls.Add(this.walkRBtn);
             this.Controls.Add(this.label2);
@@ -347,7 +347,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RadioButton walkRBtn;
         private System.Windows.Forms.RadioButton yardworkRbtn;
-        private System.Windows.Forms.RadioButton bikeRBtn;
+        private System.Windows.Forms.RadioButton cardioRBtn;
         private System.Windows.Forms.RadioButton workoutRBtn;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;

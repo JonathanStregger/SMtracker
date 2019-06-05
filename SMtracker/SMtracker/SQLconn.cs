@@ -14,7 +14,7 @@ namespace SMtracker
         private static readonly string ConnString = "Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" +
             System.AppContext.BaseDirectory + "SMData.mdf;Integrated Security=True";
         private static SqlConnection Connection = new SqlConnection(ConnString);
-        private static string[] ExTypes = { "walk", "yardwork", "workout", "bike" };
+        private static string[] ExTypes = { "walk", "yardwork", "workout", "cardio" };
 
         /// <summary>
         /// Creates a new entry in the database for today if not already started.
@@ -30,7 +30,7 @@ namespace SMtracker
                 //get the leftover play time from yesterday
                 DataTable yesterData = QueryDatabase("SELECT availablePlay FROM VGRecord WHERE VGDate = '" +
                     DateTime.Today.AddDays(-1).ToString() + "'");
-                if (yesterData != null)
+                if (yesterData != null && yesterData.Rows.Count > 0)
                 {
                     TimeSpan availablePlay = (TimeSpan)yesterData.Rows[0]["availablePlay"];
                     availablePlay = availablePlay.Add(TimeSpan.FromHours(1));

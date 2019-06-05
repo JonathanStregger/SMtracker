@@ -109,8 +109,8 @@ namespace SMtracker
         /// <param name="e">10 second Tick</param>
         private void CheckRunning(object sender, EventArgs e)
         {
-            //Record played time to database if it is the end of the day
-            if (!saved && DateTime.Now > dayEnd)
+            //Record played time if not saved
+            if (!saved)
                 saved = SavePlay();
 
             //Create a new entry for the new day at 1 AM if running
@@ -124,8 +124,9 @@ namespace SMtracker
                 {
                     VGActive.Start();
                     VGUpdate.Start();
-                    saved = false;
                 }
+
+                saved = false;
 
                 //If in treatment phase, when the played time exceeds the available play time: SOUND THE ALARM!!!
                 if (availableStart.Subtract(VGActive.Elapsed) <= TimeSpan.FromTicks(0) && DateTime.Now > treatmentStart)
@@ -209,8 +210,8 @@ namespace SMtracker
                 type = "walk";
             else if (yardworkRbtn.Checked)
                 type = "yardwork";
-            else if (bikeRBtn.Checked)
-                type = "bike";
+            else if (cardioRBtn.Checked)
+                type = "cardio";
             else if (workoutRBtn.Checked)
                 type = "workout";
             else
